@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Psych IA — Administration</title>
+  <link rel="stylesheet" href="/static/admin.css" />
+</head>
+<body>
+  <header>
+    <h1>Psych IA Ressources</h1>
+    <p>Gestion légale des ressources pédagogiques (L1 / L2 / L3)</p>
+    <p>
+      <a href="/hub">Accueil pédagogique</a> ·
+      <a href="/cours">Cours</a> ·
+      <a href="/fiches">Fiches</a> ·
+      <a href="/resumes">Résumés</a> ·
+      <a href="/questionnaires">Questionnaires patients</a> ·
+      <a href="/liner/README.md">Export Liner</a>
+    </p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Ajouter une URL</h2>
+      <form id="form-url">
+        <label>URL (open access uniquement)</label>
+        <input type="url" name="url" required placeholder="https://hal.science/..." />
+        <label>Titre (optionnel)</label>
+        <input type="text" name="title" />
+        <label>Niveau</label>
+        <select name="level">
+          <option value="">— auto —</option>
+          <option>L1</option><option>L2</option><option>L3</option>
+          <option>mixte</option><option>recherche_avancee</option>
+        </select>
+        <label>Matière</label>
+        <select name="subject">
+          <option value="">— auto —</option>
+          <option>psychologie_generale</option>
+          <option>psychologie_sociale</option>
+          <option>psychologie_cognitive</option>
+          <option>psychopathologie</option>
+          <option>statistiques</option>
+        </select>
+        <label>Tags (séparés par des virgules)</label>
+        <input type="text" name="tags" placeholder="mémoire, L2, TD" />
+        <label class="checkbox">
+          <input type="checkbox" name="user_authorized" /> Marquer comme autorisé manuellement
+        </label>
+        <button type="submit">Ajouter</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Uploader un PDF</h2>
+      <form id="form-upload" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf,.txt,.md" required />
+        <label class="checkbox">
+          <input type="checkbox" name="user_authorized" /> Autorisé / créé par moi
+        </label>
+        <button type="submit">Uploader</button>
+      </form>
+    </section>
+
+    <section class="card wide">
+      <h2>Sources</h2>
+      <div class="toolbar">
+        <button id="btn-refresh">Rafraîchir</button>
+        <button id="btn-errors">Voir erreurs</button>
+        <button id="btn-dupes">Voir doublons</button>
+      </div>
+      <table id="sources-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Titre</th><th>Niveau</th><th>Matière</th>
+            <th>Statut légal</th><th>Erreur</th><th>Tags</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Les sources <code>unknown</code> ne sont pas indexées automatiquement pour le RAG.</p>
+    <p>L'IA ne remplace pas un psychologue — voir <a href="/rules">règles système</a>.</p>
+  </footer>
+  <script src="/static/admin.js"></script>
+</body>
+</html>
