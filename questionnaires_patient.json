@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "version": "1.0",
+    "public": "patients",
+    "disclaimer": "Ces questionnaires sont des outils d'auto-réflexion à visée pédagogique. Ils ne posent aucun diagnostic et ne remplacent pas un psychologue ou un médecin. En cas de détresse : 3114 (France)."
+  },
+  "themes": [
+    {
+      "id": "humeur",
+      "titre": "Humeur et moral",
+      "notion_liee": "Troubles de l'humeur",
+      "niveau": "L2",
+      "matiere": "psychopathologie",
+      "intro": "Ce questionnaire vous invite à observer votre humeur sur les deux dernières semaines. Il s'inspire des notions universitaires sur la dépression et les troubles bipolaires, sans établir de diagnostic.",
+      "objectifs": [
+        "Repérer des variations d'humeur dans le temps",
+        "Identifier des signaux somatiques ou cognitifs associés",
+        "Préparer un échange avec un professionnel si besoin"
+      ],
+      "questions": [
+        {"id": "h1", "texte": "Je me sens triste, vide ou sans énergie.", "type": "likert"},
+        {"id": "h2", "texte": "J'ai perdu l'intérêt ou le plaisir pour des activités que j'aimais.", "type": "likert"},
+        {"id": "h3", "texte": "Mon sommeil ou mon appétit a changé de façon notable.", "type": "likert"},
+        {"id": "h4", "texte": "Je me culpabilise ou j'ai du mal à me concentrer.", "type": "likert"},
+        {"id": "h5", "texte": "J'ai vécu des périodes d'euphorie ou d'hyperactivité inhabituelles.", "type": "likert"},
+        {"id": "h6", "texte": "Décrivez ce qui influence le plus votre humeur en ce moment.", "type": "texte"}
+      ],
+      "notions_connexes": ["Psychopathologie", "Thérapies cognitivo-comportementales", "Stress professionnel"],
+      "conseils": [
+        "Notez les moments de la journée où l'humeur change.",
+        "Reliez humeur, sommeil et activité physique dans un journal simple.",
+        "Consultez un professionnel si la souffrance dure ou s'intensifie."
+      ]
+    },
+    {
+      "id": "anxiete",
+      "titre": "Anxiété et inquiétudes",
+      "notion_liee": "Psychopathologie",
+      "niveau": "L2",
+      "matiere": "psychopathologie",
+      "intro": "Ce thème explore l'anxiété anticipatoire, les tensions corporelles et l'évitement. Il reprend des repères cliniques vus en L2/L3 sans remplacer une évaluation professionnelle.",
+      "objectifs": [
+        "Distinguer inquiétude, tension corporelle et évitement",
+        "Repérer les situations déclenchantes",
+        "Identifier des stratégies d'apaisement déjà utilisées"
+      ],
+      "questions": [
+        {"id": "a1", "texte": "Je m'inquiète souvent pour l'avenir, même sans raison évidente.", "type": "likert"},
+        {"id": "a2", "texte": "Je ressens des tensions musculaires, un cœur qui s'accélère ou une respiration difficile.", "type": "likert"},
+        {"id": "a3", "texte": "J'évite certaines situations par peur d'être mal à l'aise.", "type": "likert"},
+        {"id": "a4", "texte": "Il m'est difficile de contrôler le fil de mes pensées inquiètes.", "type": "likert"},
+        {"id": "a5", "texte": "L'anxiété perturbe mon sommeil ou ma concentration.", "type": "likert"},
+        {"id": "a6", "texte": "Quelles situations déclenchent le plus votre anxiété ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Thérapies cognitivo-comportementales", "Système nerveux et comportement", "Attention"],
+      "conseils": [
+        "Nommer l'émotion et le contexte réduit parfois l'intensité de l'anxiété.",
+        "Des techniques de respiration lente peuvent aider à court terme.",
+        "Une thérapie (TCC notamment) est recommandée si l'anxiété limite votre vie."
+      ]
+    },
+    {
+      "id": "stress",
+      "titre": "Stress et surcharge",
+      "notion_liee": "Stress professionnel",
+      "niveau": "L3",
+      "matiere": "psychologie_du_travail",
+      "intro": "Inspiré du modèle demande-contrôle et des notions de burnout, ce questionnaire explore votre charge mentale et vos ressources de récupération.",
+      "objectifs": [
+        "Évaluer la charge perçue et le sentiment de contrôle",
+        "Repérer des signes d'épuisement ou de cynisme",
+        "Identifier des leviers de récupération"
+      ],
+      "questions": [
+        {"id": "s1", "texte": "Je me sens dépassé(e) par mes responsabilités.", "type": "likert"},
+        {"id": "s2", "texte": "Je peine à me déconnecter après le travail ou les obligations.", "type": "likert"},
+        {"id": "s3", "texte": "Je ressens de l'irritabilité ou de la fatigue persistante.", "type": "likert"},
+        {"id": "s4", "texte": "J'ai l'impression que mes efforts ne sont pas reconnus.", "type": "likert"},
+        {"id": "s5", "texte": "Je dispose de moments réellement réparateurs dans la semaine.", "type": "likert", "inverse": true},
+        {"id": "s6", "texte": "Qu'est-ce qui vous épuise le plus en ce moment ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Ergonomie cognitive", "Troubles de l'humeur", "Éthique et déontologie"],
+      "conseils": [
+        "Priorisez une activité réparatrice par jour, même brève.",
+        "Parlez de la charge de travail à une personne de confiance ou à un médecin du travail.",
+        "Le burnout nécessite parfois un aménagement professionnel et un suivi spécialisé."
+      ]
+    },
+    {
+      "id": "relations",
+      "titre": "Relations et attachement",
+      "notion_liee": "Attachement",
+      "niveau": "L2",
+      "matiere": "psychologie_du_developpement",
+      "intro": "Ce questionnaire explore vos schémas relationnels : confiance, proximité, peur de l'abandon ou de l'intrusion. Il s'appuie sur la théorie de l'attachement (Bowlby, Ainsworth).",
+      "objectifs": [
+        "Repérer vos besoins de proximité et d'autonomie",
+        "Identifier des patterns relationnels récurrents",
+        "Mieux comprendre vos réactions en lien affectif"
+      ],
+      "questions": [
+        {"id": "r1", "texte": "Je crains que les personnes importantes m'abandonnent.", "type": "likert"},
+        {"id": "r2", "texte": "Je préfère garder une distance émotionnelle pour me protéger.", "type": "likert"},
+        {"id": "r3", "texte": "Je me sens en sécurité en demandant du soutien.", "type": "likert", "inverse": true},
+        {"id": "r4", "texte": "Les conflits relationnels m'affectent longtemps.", "type": "likert"},
+        {"id": "r5", "texte": "Je peux exprimer mes besoins sans culpabiliser.", "type": "likert", "inverse": true},
+        {"id": "r6", "texte": "Comment décririez-vous vos relations proches actuelles ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Thérapies psychodynamiques", "Développement social de l'enfant", "Entretien clinique"],
+      "conseils": [
+        "Les schémas relationnels se construisent tôt mais peuvent évoluer.",
+        "La thérapie de couple ou individuelle peut aider à clarifier les attentes.",
+        "La communication non violente est un outil utile, pas une obligation."
+      ]
+    },
+    {
+      "id": "emotions",
+      "titre": "Émotions et régulation",
+      "notion_liee": "Approches en psychologie",
+      "niveau": "L1",
+      "matiere": "psychologie_generale",
+      "intro": "Comprendre comment vous ressentez, nommez et régulez vos émotions. Ce thème fait le lien entre psychologie cognitive et clinique.",
+      "objectifs": [
+        "Identifier les émotions dominantes de la semaine",
+        "Repérer vos stratégies de régulation (adaptées ou moins adaptées)",
+        "Relier émotions, pensées et comportements"
+      ],
+      "questions": [
+        {"id": "e1", "texte": "J'identifie facilement ce que je ressens.", "type": "likert", "inverse": true},
+        {"id": "e2", "texte": "Mes émotions montent rapidement et intensement.", "type": "likert"},
+        {"id": "e3", "texte": "Je me sens submergé(e) par certaines émotions.", "type": "likert"},
+        {"id": "e4", "texte": "Je parviens à me calmer après une montée émotionnelle.", "type": "likert", "inverse": true},
+        {"id": "e5", "texte": "J'évite certaines émotions (tristesse, colère, peur).", "type": "likert"},
+        {"id": "e6", "texte": "Quelle émotion revient le plus souvent ? Comment réagissez-vous ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Thérapies cognitivo-comportementales", "Neurone et synapse", "Psychologie sociale"],
+      "conseils": [
+        "Nommer une émotion précise aide à la réguler (ex. « déçu » plutôt que « mal »).",
+        "Les émotions sont des signaux, pas des ennemis à éliminer.",
+        "Un psychologue peut vous aider à développer des stratégies de régulation."
+      ]
+    },
+    {
+      "id": "attention",
+      "titre": "Attention et organisation",
+      "notion_liee": "TDAH",
+      "niveau": "L2",
+      "matiere": "psychopathologie",
+      "intro": "Ce questionnaire explore l'attention, l'organisation et l'impulsivité au quotidien. Il ne diagnostique pas un TDAH ; seul un professionnel qualifié peut le faire.",
+      "objectifs": [
+        "Repérer des difficultés attentionnelles ou d'organisation",
+        "Identifier les contextes les plus difficiles",
+        "Explorer des aménagements possibles"
+      ],
+      "questions": [
+        {"id": "t1", "texte": "Je me laisse facilement distraire par mon environnement.", "type": "likert"},
+        {"id": "t2", "texte": "J'oublie des rendez-vous, des objets ou des étapes importantes.", "type": "likert"},
+        {"id": "t3", "texte": "Démarrer ou terminer une tâche me demande beaucoup d'effort.", "type": "likert"},
+        {"id": "t4", "texte": "Je parle ou j'agis par impulsivité, puis je le regrette.", "type": "likert"},
+        {"id": "t5", "texte": "Des outils (agenda, rappels, listes) m'aident réellement.", "type": "likert", "inverse": true},
+        {"id": "t6", "texte": "Dans quels contextes l'attention vous pose le plus problème ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Attention", "Mémoire", "Thérapies cognitivo-comportementales"],
+      "conseils": [
+        "Externalisez : agendas visibles, minuteries, listes courtes.",
+        "Fractionnez les tâches en étapes très concrètes.",
+        "Un bilan neuropsychologique est utile si les difficultés sont persistantes."
+      ]
+    },
+    {
+      "id": "sommeil",
+      "titre": "Sommeil et rythme",
+      "notion_liee": "Système nerveux et comportement",
+      "niveau": "L1",
+      "matiere": "biologie_neurosciences",
+      "intro": "Le sommeil influence l'humeur, l'attention et le stress. Ce questionnaire repère des habitudes de sommeil à ajuster.",
+      "objectifs": [
+        "Observer la qualité et la régularité du sommeil",
+        "Repérer des facteurs perturbateurs",
+        "Envisager des hygiène du sommeil de base"
+      ],
+      "questions": [
+        {"id": "d1", "texte": "Je m'endors difficilement ou je me réveille la nuit.", "type": "likert"},
+        {"id": "d2", "texte": "Je me sens reposé(e) au réveil.", "type": "likert", "inverse": true},
+        {"id": "d3", "texte": "Mes horaires de coucher et de lever varient beaucoup.", "type": "likert"},
+        {"id": "d4", "texte": "Les écrans ou les préoccupations m'empêchent de dormir.", "type": "likert"},
+        {"id": "d5", "texte": "La fatigue impacte ma journée ou mon humeur.", "type": "likert"},
+        {"id": "d6", "texte": "Décrivez votre routine du soir et ce qui la perturbe.", "type": "texte"}
+      ],
+      "notions_connexes": ["Troubles de l'humeur", "Stress professionnel", "Attention"],
+      "conseils": [
+        "Fixez une heure de lever régulière, même le week-end.",
+        "Réservez le lit au sommeil (pas au travail ni aux écrans).",
+        "Consultez un médecin si l'insomnie dure plus de trois semaines."
+      ]
+    },
+    {
+      "id": "estime",
+      "titre": "Estime de soi et confiance",
+      "notion_liee": "Personnalité",
+      "niveau": "L2",
+      "matiere": "psychologie_differentielle",
+      "intro": "Ce thème explore l'image de soi, l'autocritique et le sentiment d'efficacité personnelle, en lien avec les modèles de personnalité et les schémas cognitifs.",
+      "objectifs": [
+        "Repérer l'autocritique et la comparaison sociale",
+        "Identifier vos forces et réussites récentes",
+        "Relier estime de soi et exigences personnelles"
+      ],
+      "questions": [
+        {"id": "c1", "texte": "Je me juge sévèrement quand je fais une erreur.", "type": "likert"},
+        {"id": "c2", "texte": "Je me compare défavorablement aux autres.", "type": "likert"},
+        {"id": "c3", "texte": "Je me sens capable de faire face aux difficultés.", "type": "likert", "inverse": true},
+        {"id": "c4", "texte": "J'ai du mal à accepter un compliment.", "type": "likert"},
+        {"id": "c5", "texte": "Mes exigences envers moi-même sont très élevées.", "type": "likert"},
+        {"id": "c6", "texte": "Quelles qualités reconnaissez-vous chez vous aujourd'hui ?", "type": "texte"}
+      ],
+      "notions_connexes": ["Thérapies cognitivo-comportementales", "Préjugés et stéréotypes", "Psychologie sociale"],
+      "conseils": [
+        "Listez trois réussites concrètes de la semaine, même petites.",
+        "Parlez-vous comme vous parleriez à un ami proche.",
+        "Un travail thérapeutique peut cibler les schémas d'autodévalorisation."
+      ]
+    }
+  ]
+}

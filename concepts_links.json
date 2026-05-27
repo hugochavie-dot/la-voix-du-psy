@@ -1,0 +1,431 @@
+[
+  {
+    "notion": "Histoire de la psychologie",
+    "level": "L1",
+    "subject": "psychologie_generale",
+    "intro": "La psychologie s'est construite entre philosophie et sciences naturelles. Jalons : Wundt (1879), structuralisme, fonctionnalisme, behaviorisme, psychanalyse, gestalt, cognitivisme. Comprendre l'évolution des objets et méthodes.",
+    "liens": [
+      {"notion_liee": "Épistémologie", "relation": "fondements des paradigmes"},
+      {"notion_liee": "Approches en psychologie", "relation": "héritage théorique"},
+      {"notion_liee": "Méthodologie expérimentale", "relation": "émergence de la méthode"}
+    ]
+  },
+  {
+    "notion": "Approches en psychologie",
+    "level": "L1",
+    "subject": "psychologie_generale",
+    "intro": "Chaque approche définit un objet, des méthodes et des explications : biologique/neuro, cognitive, comportementale, psychanalytique, humaniste, systémique, évolutionniste. Aucune n'épuise seule la complexité humaine.",
+    "liens": [
+      {"notion_liee": "Neurone et synapse", "relation": "approche biologique"},
+      {"notion_liee": "Mémoire", "relation": "approche cognitive"},
+      {"notion_liee": "Conditionnement", "relation": "approche comportementale"}
+    ]
+  },
+  {
+    "notion": "Conditionnement",
+    "level": "L1",
+    "subject": "psychologie_generale",
+    "intro": "Apprentissage par association : conditionnement classique (Pavlov : CS, US, CR) et opérant (Skinner : renforcement, punition, extinction). Base des thérapies comportementales et de l'étude de l'apprentissage.",
+    "liens": [
+      {"notion_liee": "Thérapies cognitivo-comportementales", "relation": "application clinique L3"},
+      {"notion_liee": "Méthodologie expérimentale", "relation": "protocoles animaux/humains"},
+      {"notion_liee": "Approches en psychologie", "relation": "behaviorisme"}
+    ]
+  },
+  {
+    "notion": "Influence sociale",
+    "level": "L1",
+    "subject": "psychologie_sociale",
+    "intro": "L'individu est influencé par la présence ou l'action d'autrui : conformisme (Asch), obéissance à l'autorité (Milgram), compliance, normes sociales. Distinction influence normative vs informationnelle.",
+    "liens": [
+      {"notion_liee": "Conformisme et obéissance", "relation": "approfondissement L2"},
+      {"notion_liee": "Attitudes et persuasion", "relation": "changement d'attitude"},
+      {"notion_liee": "Préjugés et stéréotypes", "relation": "biais intergroupes"}
+    ]
+  },
+  {
+    "notion": "Attitudes et persuasion",
+    "level": "L1",
+    "subject": "psychologie_sociale",
+    "intro": "Une attitude combine évaluations cognitives, affectives et comportementales envers un objet. Persuasion : source, message, canal, récepteur (modèle ELM : voie centrale vs périphérique).",
+    "liens": [
+      {"notion_liee": "Influence sociale", "relation": "changement comportemental"},
+      {"notion_liee": "Préjugés et stéréotypes", "relation": "attitudes intergroupes"},
+      {"notion_liee": "Psychologie sociale avancée", "relation": "L2"}
+    ]
+  },
+  {
+    "notion": "Stades du développement",
+    "level": "L1",
+    "subject": "psychologie_du_developpement",
+    "intro": "Piaget : sensori-moteur, préopératoire, concrète, formelle — construction progressive du raisonnement. Vygotsky : zone proximale de développement, médiation sociale. Critiques : continuité vs étapes.",
+    "liens": [
+      {"notion_liee": "Attachement", "relation": "développement précoce"},
+      {"notion_liee": "Développement social de l'enfant", "relation": "socialisation"},
+      {"notion_liee": "Psychopathologie", "relation": "troubles développementaux"}
+    ]
+  },
+  {
+    "notion": "Développement social de l'enfant",
+    "level": "L1",
+    "subject": "psychologie_du_developpement",
+    "intro": "Acquisition des compétences sociales : jeu, pairs, moralité (Piaget, Kohlberg), théorie de l'esprit. Le contexte familial et culturel modèle les interactions.",
+    "liens": [
+      {"notion_liee": "Attachement", "relation": "base relationnelle"},
+      {"notion_liee": "Stades du développement", "relation": "cadre cognitif"},
+      {"notion_liee": "Psychologie clinique", "relation": "repérage précoce L3"}
+    ]
+  },
+  {
+    "notion": "Statistiques descriptives",
+    "level": "L1",
+    "subject": "statistiques",
+    "intro": "Résumer des données : tendance centrale (moyenne, médiane, mode), dispersion (variance, écart-type), distribution, percentiles. Prérequis indispensable aux inférences L2.",
+    "liens": [
+      {"notion_liee": "Test statistique", "relation": "suite logique L2"},
+      {"notion_liee": "Variables et design expérimental", "relation": "mesure des variables"},
+      {"notion_liee": "Tests psychométriques", "relation": "distribution des scores"}
+    ]
+  },
+  {
+    "notion": "Variables et design expérimental",
+    "level": "L1",
+    "subject": "methodologie_experimentale",
+    "intro": "Variable indépendante (VI), dépendante (VD), variables confondantes. Designs : intra vs inter-sujets, groupes contrôle, randomisation, validité interne et externe.",
+    "liens": [
+      {"notion_liee": "Épistémologie", "relation": "validité scientifique"},
+      {"notion_liee": "Plan expérimental avancé", "relation": "approfondissement L3"},
+      {"notion_liee": "Test statistique", "relation": "analyse des effets"}
+    ]
+  },
+  {
+    "notion": "Neurone et synapse",
+    "level": "L1",
+    "subject": "neurosciences",
+    "intro": "Le neurone : axone, dendrites, potentiel d'action, synapse, neurotransmetteurs (dopamine, sérotonine, GABA…). Base de la communication nerveuse et des approches psychopharmacologiques.",
+    "liens": [
+      {"notion_liee": "Système nerveux et comportement", "relation": "niveau système"},
+      {"notion_liee": "TDAH", "relation": "neurotransmetteurs"},
+      {"notion_liee": "Psychopathologie", "relation": "modèles biologiques"}
+    ]
+  },
+  {
+    "notion": "Système nerveux et comportement",
+    "level": "L1",
+    "subject": "neurosciences",
+    "intro": "SNC et SNP, cortex, système limbique (amygdale, hippocampe), homéostasie. Localisation vs réseaux : plasticité cérébrale et bases neuro de l'émotion, mémoire, motivation.",
+    "liens": [
+      {"notion_liee": "Neurone et synapse", "relation": "niveau cellulaire"},
+      {"notion_liee": "Mémoire", "relation": "hippocampe"},
+      {"notion_liee": "Stress professionnel", "relation": "axe HPA"}
+    ]
+  },
+  {
+    "notion": "Épistémologie",
+    "level": "L1",
+    "subject": "epistemologie",
+    "intro": "Comment produire des connaissances valides en psychologie ? Objectivité, falsifiabilité, réplicabilité, biais de publication. Paradigmes : behaviorisme, cognitivisme, constructivisme, critique post-moderniste.",
+    "liens": [
+      {"notion_liee": "Méthodologie expérimentale", "relation": "fondements des méthodes"},
+      {"notion_liee": "Réplication et science ouverte", "relation": "enjeux actuels L3"},
+      {"notion_liee": "Histoire de la psychologie", "relation": "évolution des paradigmes"}
+    ]
+  },
+  {
+    "notion": "Mémoire",
+    "level": "L2",
+    "subject": "psychologie_cognitive",
+    "intro": "Encodage, stockage, récupération. Mémoire sensorielle, à court terme, de travail (Baddeley), long terme (sémantique, épisodique, procédurale). Oublie, interference, récupération, faux souvenirs.",
+    "liens": [
+      {"notion_liee": "Attention", "relation": "encodage"},
+      {"notion_liee": "Psychopathologie", "relation": "mémoire traumatique"},
+      {"notion_liee": "Perception", "relation": "trace sensorielle"}
+    ]
+  },
+  {
+    "notion": "Attention",
+    "level": "L2",
+    "subject": "psychologie_cognitive",
+    "intro": "Sélection, capacité limitée, attention divisée, contrôle exécutif. Modèles : filtre (Broadbent), attentionnel (Kahneman), désengagement. Lien avec TDAH et charge mentale.",
+    "liens": [
+      {"notion_liee": "TDAH", "relation": "application clinique"},
+      {"notion_liee": "Mémoire", "relation": "mémoire de travail"},
+      {"notion_liee": "Ergonomie cognitive", "relation": "L3 travail"}
+    ]
+  },
+  {
+    "notion": "Perception",
+    "level": "L2",
+    "subject": "psychologie_cognitive",
+    "intro": "Du stimulus à la représentation : seuils, organisation perceptuelle (Gestalt), constances, illusions. Perception visuelle et auditive ; top-down vs bottom-up ; attention et perception.",
+    "liens": [
+      {"notion_liee": "Attention", "relation": "sélection perceptuelle"},
+      {"notion_liee": "Langage", "relation": "perception de la parole"},
+      {"notion_liee": "Neurosciences", "relation": "voies sensorielles"}
+    ]
+  },
+  {
+    "notion": "Langage",
+    "level": "L2",
+    "subject": "psychologie_cognitive",
+    "intro": "Composantes : phonologie, morphologie, syntaxe, sémantique, pragmatique. Acquisition langagière (nativisme vs empirisme), aphasies, bilinguisme, langage et pensée (Sapir-Whorf modéré).",
+    "liens": [
+      {"notion_liee": "Raisonnement et intelligence", "relation": "fonctions supérieures"},
+      {"notion_liee": "Développement social de l'enfant", "relation": "acquisition"},
+      {"notion_liee": "Perception", "relation": "perception de la parole"}
+    ]
+  },
+  {
+    "notion": "Raisonnement et intelligence",
+    "level": "L2",
+    "subject": "psychologie_cognitive",
+    "intro": "Intelligence factorielle (Spearman g), multiples (Gardner, Sternberg). Raisonnement déductif, inductif, heuristiques et biais (Kahneman). Tests de QI : fiabilité, validité, limites.",
+    "liens": [
+      {"notion_liee": "Tests psychométriques", "relation": "mesure"},
+      {"notion_liee": "Personnalité", "relation": "psychologie différentielle"},
+      {"notion_liee": "Langage", "relation": "fonctions supérieures"}
+    ]
+  },
+  {
+    "notion": "Attachement",
+    "level": "L2",
+    "subject": "psychologie_du_developpement",
+    "intro": "Bowlby : besoin d'attachement, modèle interne opérant. Ainsworth : strange situation — sécurisé, évitant, ambivalent, désorganisé. Conséquences développementales et adultes (pas diagnostic).",
+    "liens": [
+      {"notion_liee": "Thérapies psychodynamiques", "relation": "relation thérapeutique L3"},
+      {"notion_liee": "Psychopathologie", "relation": "troubles relationnels"},
+      {"notion_liee": "Développement social de l'enfant", "relation": "L1"}
+    ]
+  },
+  {
+    "notion": "Psychopathologie",
+    "level": "L2",
+    "subject": "psychopathologie",
+    "intro": "Étude des troubles mentaux : définition, nosographie (DSM-5-TR, CIM-11), modèle biopsychosocial. Distinction normal/pathologique, comorbidités, stigma. L'IA ne pose pas de diagnostic.",
+    "liens": [
+      {"notion_liee": "TDAH", "relation": "trouble neurodéveloppemental"},
+      {"notion_liee": "Troubles de l'humeur", "relation": "troubles internalisés"},
+      {"notion_liee": "Psychologie clinique", "relation": "L3"}
+    ]
+  },
+  {
+    "notion": "TDAH",
+    "level": "L2",
+    "subject": "psychopathologie",
+    "intro": "Trouble du neurodéveloppement : inattention, hyperactivité, impulsivité. Prévalence, critères DSM, comorbidités (TSA, opposition). Approches : psychoéducation, TCC, psychopharmacologie (information générale).",
+    "liens": [
+      {"notion_liee": "Attention", "relation": "modèle cognitif"},
+      {"notion_liee": "Neurone et synapse", "relation": "dopamine"},
+      {"notion_liee": "Thérapies cognitivo-comportementales", "relation": "prise en charge L3"}
+    ]
+  },
+  {
+    "notion": "Troubles de l'humeur",
+    "level": "L2",
+    "subject": "psychopathologie",
+    "intro": "Continuum tristesse — épisode dépressif caractérisé — trouble bipolaire. Symptômes cognitifs, somatiques, rythmes circadiens. Modèles : cognitive (Beck), biologique, stress-vulnérabilité.",
+    "liens": [
+      {"notion_liee": "Psychopathologie", "relation": "cadre général"},
+      {"notion_liee": "Thérapies cognitivo-comportementales", "relation": "TCC dépression L3"},
+      {"notion_liee": "Schizophrénie", "relation": "troubles sévères"}
+    ]
+  },
+  {
+    "notion": "Schizophrénie",
+    "level": "L2",
+    "subject": "psychopathologie",
+    "intro": "Trouble psychotique : symptômes positifs (délire, hallucinations), négatifs (aplomb, alogie), désorganisation. Modèle diathèse-stress, neurodéveloppement. Traitements : antipsychotiques, remédiation cognitive.",
+    "liens": [
+      {"notion_liee": "Psychopathologie", "relation": "nosographie"},
+      {"notion_liee": "Neurone et synapse", "relation": "dopamine"},
+      {"notion_liee": "Entretien clinique", "relation": "alliance thérapeutique L3"}
+    ]
+  },
+  {
+    "notion": "Test statistique",
+    "level": "L2",
+    "subject": "statistiques",
+    "intro": "Inférence : H0, H1, p-value, alpha, erreurs type I/II, IC. Tests t, chi², corrélations. Conditions d'application, interprétation prudente (p-value ≠ taille d'effet).",
+    "liens": [
+      {"notion_liee": "ANOVA", "relation": "comparaisons multiples"},
+      {"notion_liee": "Puissance statistique", "relation": "G*Power"},
+      {"notion_liee": "Variables et design expérimental", "relation": "L1"}
+    ]
+  },
+  {
+    "notion": "ANOVA",
+    "level": "L2",
+    "subject": "statistiques",
+    "intro": "Analyse de variance : comparer moyennes de 3+ groupes. ANOVA un facteur, interactions ANOVA factorial, post-hoc (Bonferroni, Tukey). Suppositions : normalité, homoscédasticité, indépendance.",
+    "liens": [
+      {"notion_liee": "Test statistique", "relation": "famille inférentielle"},
+      {"notion_liee": "Plan expérimental avancé", "relation": "designs complexes L3"},
+      {"notion_liee": "Statistiques descriptives", "relation": "prérequis L1"}
+    ]
+  },
+  {
+    "notion": "Corrélation et régression",
+    "level": "L2",
+    "subject": "statistiques",
+    "intro": "Corrélation de Pearson (r) : force et direction d'une relation linéaire. Régression simple : prédire Y à partir de X, R², résidus. Attention : corrélation ≠ causalité.",
+    "liens": [
+      {"notion_liee": "Test statistique", "relation": "significativité de r"},
+      {"notion_liee": "Tests psychométriques", "relation": "validité prédictive"},
+      {"notion_liee": "Mémoire de recherche", "relation": "analyse L3"}
+    ]
+  },
+  {
+    "notion": "Puissance statistique",
+    "level": "L2",
+    "subject": "statistiques",
+    "intro": "Probabilité de détecter un effet réel (1 − β). Dépend de N, alpha, taille d'effet. G*Power : calcul a priori du N nécessaire. Sous-puissance → résultats non significatifs trompeurs.",
+    "liens": [
+      {"notion_liee": "Test statistique", "relation": "erreur type II"},
+      {"notion_liee": "Réplication et science ouverte", "relation": "pré-enregistrement L3"},
+      {"notion_liee": "Plan expérimental avancé", "relation": "dimensionnement d'échantillon"}
+    ]
+  },
+  {
+    "notion": "Personnalité",
+    "level": "L2",
+    "subject": "psychologie_differentielle",
+    "intro": "Traits stables vs états. Big Five (OCEAN) : modèle empirique dominant. Autres : Eysenck, HEXACO. Héritabilité, cohérence cross-situationnelle modérée, approche person-situation.",
+    "liens": [
+      {"notion_liee": "Tests psychométriques", "relation": "inventaires de personnalité"},
+      {"notion_liee": "Psychopathologie", "relation": "troubles de la personnalité"},
+      {"notion_liee": "Raisonnement et intelligence", "relation": "différences individuelles"}
+    ]
+  },
+  {
+    "notion": "Tests psychométriques",
+    "level": "L2",
+    "subject": "psychologie_differentielle",
+    "intro": "Qualités psychométriques : fiabilité (test-retest, alpha), validité (de contenu, critère, construit). Normalisation, biais culturels. Éthique : consentement, feedback, non-discrimination.",
+    "liens": [
+      {"notion_liee": "Personnalité", "relation": "application"},
+      {"notion_liee": "Raisonnement et intelligence", "relation": "tests de QI"},
+      {"notion_liee": "Statistiques descriptives", "relation": "distribution des scores"}
+    ]
+  },
+  {
+    "notion": "Conformisme et obéissance",
+    "level": "L2",
+    "subject": "psychologie_sociale",
+    "intro": "Asch : conformité visuelle à une majorité. Milgram : obéissance à une autorité légitime malgré conflit moral. Zimbardo (critique éthique). Facteurs : cohésion, anonymat, légitimité.",
+    "liens": [
+      {"notion_liee": "Influence sociale", "relation": "L1"},
+      {"notion_liee": "Préjugés et stéréotypes", "relation": "normes de groupe"},
+      {"notion_liee": "Éthique et déontologie", "relation": "limites de la recherche L3"}
+    ]
+  },
+  {
+    "notion": "Préjugés et stéréotypes",
+    "level": "L2",
+    "subject": "psychologie_sociale",
+    "intro": "Stéréotype (croyance), préjugé (attitude), discrimination (comportement). Activation automatique, menace du stéréotype (Steele), contact intergroupes (Allport). Réduction : superordinate goals.",
+    "liens": [
+      {"notion_liee": "Attitudes et persuasion", "relation": "changement d'attitude"},
+      {"notion_liee": "Conformisme et obéissance", "relation": "normes sociales"},
+      {"notion_liee": "Psychopathologie", "relation": "stigmatisation"}
+    ]
+  },
+  {
+    "notion": "Entretien clinique",
+    "level": "L3",
+    "subject": "psychologie_clinique",
+    "intro": "Alliance thérapeutique, écoute active, reformulation, questionnement ouvert. Entretien motivationnel, anamnèse, évaluation des risques. Posture éthique : non-jugement, confidentialité, limites du rôle.",
+    "liens": [
+      {"notion_liee": "Thérapies cognitivo-comportementales", "relation": "cadre TCC"},
+      {"notion_liee": "Thérapies psychodynamiques", "relation": "cadre psychanalytique"},
+      {"notion_liee": "Éthique et déontologie", "relation": "cadre professionnel"}
+    ]
+  },
+  {
+    "notion": "Thérapies cognitivo-comportementales",
+    "level": "L3",
+    "subject": "psychologie_clinique",
+    "intro": "TCC : lien pensées–émotions–comportements. Techniques : restructuration cognitive, exposition, activation comportementale, entraînement aux habiletés sociales. Evidence-based pour dépression, anxiété, TDAH.",
+    "liens": [
+      {"notion_liee": "Conditionnement", "relation": "fondements comportementaux"},
+      {"notion_liee": "Troubles de l'humeur", "relation": "indication principale"},
+      {"notion_liee": "TDAH", "relation": "prise en charge adjointe"}
+    ]
+  },
+  {
+    "notion": "Thérapies psychodynamiques",
+    "level": "L3",
+    "subject": "psychologie_clinique",
+    "intro": "Héritage freudien : inconscient, transfert, contre-transfert, résistances, défenses. Approches contemporaines : psychothérapie psychodynamique brève. Focus sur les relations précoces et les conflits intrapsychiques.",
+    "liens": [
+      {"notion_liee": "Attachement", "relation": "modèles relationnels"},
+      {"notion_liee": "Entretien clinique", "relation": "alliance"},
+      {"notion_liee": "Approches en psychologie", "relation": "courant psychanalytique"}
+    ]
+  },
+  {
+    "notion": "Éthique et déontologie",
+    "level": "L3",
+    "subject": "psychologie_clinique",
+    "intro": "Code déontologique des psychologues : compétence, consentement éclairé, secret professionnel, limites de l'intervention. Recherche : comité d'éthique, milgram/zimbardo comme leçons. Numéro 3114 si détresse.",
+    "liens": [
+      {"notion_liee": "Entretien clinique", "relation": "pratique quotidienne"},
+      {"notion_liee": "Conformisme et obéissance", "relation": "éthique de la recherche"},
+      {"notion_liee": "Mémoire de recherche", "relation": "intégrité scientifique"}
+    ]
+  },
+  {
+    "notion": "Stress professionnel",
+    "level": "L3",
+    "subject": "psychologie_du_travail",
+    "intro": "Modèle demande-contrôle (Karasek), charge mentale, burnout (épuisement, cynisme, inefficacité). Facteurs organisationnels vs individuels. Prévention : ergonomie, soutien social, équilibre vie pro/perso.",
+    "liens": [
+      {"notion_liee": "Ergonomie cognitive", "relation": "conception du travail"},
+      {"notion_liee": "Système nerveux et comportement", "relation": "axe stress"},
+      {"notion_liee": "Troubles de l'humeur", "relation": "conséquences santé"}
+    ]
+  },
+  {
+    "notion": "Ergonomie cognitive",
+    "level": "L3",
+    "subject": "psychologie_du_travail",
+    "intro": "Adapter les systèmes (interfaces, procédures) aux capacités humaines : charge cognitive, erreurs humaines, affordances. Applications : IHM, aviation, santé. Complémentaire à la psychologie du travail.",
+    "liens": [
+      {"notion_liee": "Attention", "relation": "charge attentionnelle"},
+      {"notion_liee": "Stress professionnel", "relation": "contraintes de travail"},
+      {"notion_liee": "Perception", "relation": "design perceptif"}
+    ]
+  },
+  {
+    "notion": "Plan expérimental avancé",
+    "level": "L3",
+    "subject": "methodologie_experimentale",
+    "intro": "Designs mixtes, mesures répétées, counterbalancing, contrôle des effets d'ordre. Quasi-expériences, variables médianes/modératrices. Pré-enregistrement et plans d'analyse pour limiter le p-hacking.",
+    "liens": [
+      {"notion_liee": "ANOVA", "relation": "analyses associées"},
+      {"notion_liee": "Puissance statistique", "relation": "calcul du N"},
+      {"notion_liee": "Variables et design expérimental", "relation": "bases L1"}
+    ]
+  },
+  {
+    "notion": "Réplication et science ouverte",
+    "level": "L3",
+    "subject": "methodologie_experimentale",
+    "intro": "Crise de réplication en psychologie. Open science : pré-enregistrement, données ouvertes, revues enregistrées. Pratiques de recherche ouvertes (PRO) : transparence, reproductibilité, confiance publique.",
+    "liens": [
+      {"notion_liee": "Épistémologie", "relation": "validité des connaissances"},
+      {"notion_liee": "Puissance statistique", "relation": "études sous-puissantes"},
+      {"notion_liee": "Mémoire de recherche", "relation": "rédaction rigoureuse"}
+    ]
+  },
+  {
+    "notion": "Mémoire de recherche",
+    "level": "L3",
+    "subject": "memoire_recherche",
+    "intro": "Structure : problématique, état de l'art, hypothèses, méthode, résultats, discussion, limites. Normes APA pour citations. Originalité, rigueur méthodologique, soutenance orale.",
+    "liens": [
+      {"notion_liee": "Corrélation et régression", "relation": "analyses possibles"},
+      {"notion_liee": "Réplication et science ouverte", "relation": "transparence"},
+      {"notion_liee": "Éthique et déontologie", "relation": "intégrité"}
+    ]
+  }
+]

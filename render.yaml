@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: psych-ia-ressources
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////app/storage/psych_ia.db
+      - key: CHROMA_PERSIST_DIR
+        value: storage/chroma
+      - key: EMBEDDING_MODEL
+        value: paraphrase-multilingual-MiniLM-L12-v2
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: "8000"
