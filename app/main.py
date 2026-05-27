@@ -18,6 +18,7 @@ from app.services.html_exporter import OUTPUT_DIR
 from app.services.source_manager import load_concepts_from_json
 
 ADMIN_DIR = Path(__file__).parent / "admin"
+ADMIN_INDEX = ADMIN_DIR / "templates" / "index.html"
 templates = Jinja2Templates(directory=str(ADMIN_DIR / "templates"))
 COURS_INDEX = OUTPUT_DIR / "index.html"
 RESUMES_INDEX = RESUMES_DIR / "index.html"
@@ -80,7 +81,12 @@ if QUESTIONNAIRES_DIR.exists() and QUESTIONNAIRES_INDEX.exists():
 
 @app.get("/", response_class=HTMLResponse)
 async def admin_home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    if ADMIN_INDEX.exists():
+        return HTMLResponse(ADMIN_INDEX.read_text(encoding="utf-8"))
+    return HTMLResponse(
+        "<h1>Psych IA Ressources</h1><p>Interface admin indisponible.</p>",
+        status_code=503,
+    )
 
 
 @app.get("/accueil")
