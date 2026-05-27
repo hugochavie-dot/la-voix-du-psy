@@ -1,0 +1,34 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Données locales (PDFs téléchargés)
+data/**/*.pdf
+data/**/*.html
+data/**/*.docx
+data2/**/*.pdf
+data2/**/*.html
+data2/**/*.docx
+
+# Export HTML (régénérable)
+output/cours/
+
+# Index & logs
+storage/chroma/
+logs/*.log
+*.db-journal
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Modèles ML cache
+.cache/
+models/

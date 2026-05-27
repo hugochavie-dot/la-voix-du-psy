@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Humeur et moral — Questionnaires patients</title>
+  <link rel="stylesheet" href="../assets/cours.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html">← Catalogue des questionnaires</a>
+  </header>
+  <main class="content">
+    <h1>Humeur et moral</h1>
+    <p class="meta">
+      <span class="badge">Licence 2</span>
+      <span class="badge">Psychopathologie</span>
+      · Notion : Troubles de l&#x27;humeur
+    </p>
+    <div class="warning-box">
+      ⚠️ Auto-réflexion pédagogique uniquement — pas de diagnostic. Consultez un professionnel si besoin (3114).
+    </div>
+    <p>Ce questionnaire vous invite à observer votre humeur sur les deux dernières semaines. Il s&#x27;inspire des notions universitaires sur la dépression et les troubles bipolaires, sans établir de diagnostic.</p>
+    <h2>Objectifs</h2>
+    <ul class="objectifs"><li>Repérer des variations d&#x27;humeur dans le temps</li><li>Identifier des signaux somatiques ou cognitifs associés</li><li>Préparer un échange avec un professionnel si besoin</li></ul>
+    <h2>Questionnaire</h2>
+    <form id="qform-humeur" class="questionnaire-form">
+      <div class="q-block"><label class="q-text">Je me sens triste, vide ou sans énergie.</label><div class="likert"><label><input type="radio" name="h1" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="h1" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="h1" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="h1" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="h1" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">J&#x27;ai perdu l&#x27;intérêt ou le plaisir pour des activités que j&#x27;aimais.</label><div class="likert"><label><input type="radio" name="h2" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="h2" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="h2" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="h2" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="h2" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Mon sommeil ou mon appétit a changé de façon notable.</label><div class="likert"><label><input type="radio" name="h3" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="h3" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="h3" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="h3" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="h3" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Je me culpabilise ou j&#x27;ai du mal à me concentrer.</label><div class="likert"><label><input type="radio" name="h4" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="h4" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="h4" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="h4" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="h4" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">J&#x27;ai vécu des périodes d&#x27;euphorie ou d&#x27;hyperactivité inhabituelles.</label><div class="likert"><label><input type="radio" name="h5" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="h5" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="h5" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="h5" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="h5" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Décrivez ce qui influence le plus votre humeur en ce moment.</label><textarea class="q-textarea" name="h6" rows="3"></textarea></div>
+      <button type="submit" class="btn-primary">Voir mon bilan indicatif</button>
+    </form>
+    <div id="qresult-humeur" class="result-box" hidden>
+      <h3>Bilan indicatif</h3>
+      <p class="result-text"></p>
+      <h4>Conseils pédagogiques</h4>
+      <ul><li>Notez les moments de la journée où l&#x27;humeur change.</li><li>Reliez humeur, sommeil et activité physique dans un journal simple.</li><li>Consultez un professionnel si la souffrance dure ou s&#x27;intensifie.</li></ul>
+      <h4>Notions liées (programme L1/L2/L3)</h4>
+      <div class="notions"><span>Psychopathologie</span><span>Thérapies cognitivo-comportementales</span><span>Stress professionnel</span></div>
+    </div>
+    
+<script>
+(function() {
+  const form = document.getElementById("qform-humeur");
+  const result = document.getElementById("qresult-humeur");
+  if (!form || !result) return;
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    let score = 0;
+    let count = 0;
+    form.querySelectorAll('input[type="radio"]:checked').forEach(function(input) {
+      let val = parseInt(input.value, 10);
+      if (input.dataset.inverse === "1") val = 4 - val;
+      score += val;
+      count += 1;
+    });
+    const max = count * 4;
+    const pct = max ? Math.round((score / max) * 100) : 0;
+    let msg = "Score indicatif : " + score + " / " + max + " (" + pct + "%). ";
+    if (pct >= 60) {
+      msg += "Plusieurs items ressortent : notez vos réponses ouvertes et envisagez d'en parler à un professionnel.";
+    } else if (pct >= 35) {
+      msg += "Quelques signaux à observer : le journal quotidien peut aider à mieux comprendre.";
+    } else {
+      msg += "Peu d'items élevés cette semaine : continuez à observer vos habitudes.";
+    }
+    msg += " Ce score n'est pas un diagnostic.";
+    result.hidden = false;
+    result.querySelector(".result-text").textContent = msg;
+    result.scrollIntoView({ behavior: "smooth" });
+  });
+})();
+</script>
+
+    </main>
+  <footer class="site-footer">
+    <p>Ces questionnaires ne remplacent pas un psychologue. En cas de détresse : 3114.</p>
+  </footer>
+</body>
+</html>

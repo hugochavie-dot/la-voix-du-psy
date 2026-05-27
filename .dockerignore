@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.git/
+.gitignore
+.DS_Store
+logs/*.log
+storage/chroma/
+data/**/*.pdf
+data2/**/*.pdf
+*.db-journal
+.cache/
+models/
+.idea/
+.vscode/

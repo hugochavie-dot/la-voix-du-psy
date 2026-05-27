@@ -1,0 +1,128 @@
+{
+  "description": "Configuration initiale des sources — uniquement contenus libres / open access / références officielles",
+  "sources": [
+    {
+      "id": "maquette_l1_l2_l3",
+      "title": "Référentiel Licence Psychologie (France Compétences)",
+      "url": "https://www.francecompetences.fr/recherche/rncp/37274/",
+      "document_type": "referentiel",
+      "level": "mixte",
+      "subject": "psychologie_generale",
+      "legal_status": "open_access",
+      "enabled": true,
+      "download": false,
+      "notes": "Page publique de référence — pas de PDF automatique"
+    },
+    {
+      "id": "openstax_psychology_2e",
+      "title": "OpenStax Psychology 2e",
+      "url": "https://openstax.org/details/books/psychology-2e",
+      "document_type": "manuel_libre",
+      "level": "L1",
+      "subject": "psychologie_generale",
+      "legal_status": "open_access",
+      "license": "CC BY 4.0",
+      "enabled": true,
+      "download": false,
+      "notes": "Télécharger manuellement le PDF depuis OpenStax puis l'uploader — pas de scraping du site"
+    },
+    {
+      "id": "hal_psychologie_exemple",
+      "title": "HAL — recherche psychologie (portail)",
+      "url": "https://hal.science/search/index/?q=psychologie&domain=shs",
+      "document_type": "article_scientifique",
+      "level": "recherche_avancee",
+      "subject": "psychologie_generale",
+      "legal_status": "open_access",
+      "enabled": true,
+      "download": false,
+      "notes": "Ajouter les URLs HAL des articles précis via l'admin"
+    },
+    {
+      "id": "cnrs_psychologie",
+      "title": "CNRS — psychologie cognitive et sociale",
+      "url": "https://www.cnrs.fr/fr/science/psycho-cogn",
+      "document_type": "autre",
+      "level": "recherche_avancee",
+      "subject": "psychologie_cognitive",
+      "legal_status": "open_access",
+      "enabled": true,
+      "download": false
+    },
+    {
+      "id": "inserm_neurosciences",
+      "title": "INSERM — neurosciences",
+      "url": "https://www.inserm.fr/",
+      "document_type": "autre",
+      "level": "recherche_avancee",
+      "subject": "neurosciences",
+      "legal_status": "open_access",
+      "enabled": true,
+      "download": false
+    },
+    {
+      "id": "glossaire_utilisateur",
+      "title": "Glossaire psychologie (créé par l'utilisateur)",
+      "document_type": "glossaire",
+      "level": "L1",
+      "subject": "glossaire",
+      "legal_status": "created_by_user",
+      "enabled": true,
+      "download": false,
+      "local_hint": "mes_donnees/ ou ressources_libres/glossaires/"
+    },
+    {
+      "id": "banque_quiz",
+      "title": "Banque de quiz QCM",
+      "document_type": "quiz",
+      "level": "L1",
+      "subject": "quiz",
+      "legal_status": "created_by_user",
+      "enabled": true,
+      "download": false
+    },
+    {
+      "id": "banque_fiches",
+      "title": "Banque de fiches de révision",
+      "document_type": "fiche_revision",
+      "level": "L1",
+      "subject": "fiches_de_revision",
+      "legal_status": "created_by_user",
+      "enabled": true,
+      "download": false
+    },
+    {
+      "id": "concepts_links",
+      "title": "Base de liens entre notions",
+      "document_type": "autre",
+      "level": "L1",
+      "subject": "liens_entre_notions",
+      "legal_status": "created_by_user",
+      "enabled": true,
+      "download": false,
+      "file": "concepts_links.json"
+    },
+    {
+      "id": "regles_securite_ia",
+      "title": "Règles de sécurité pédagogique",
+      "document_type": "autre",
+      "legal_status": "open_access",
+      "enabled": true,
+      "download": false,
+      "file": "config/system_rules.txt"
+    }
+  ],
+  "blocked_patterns": [
+    "sci-hub",
+    "libgen",
+    "z-lib",
+    "paywall"
+  ],
+  "trusted_publishers": [
+    "hal.science",
+    "openstax.org",
+    "cnrs.fr",
+    "inserm.fr",
+    "francecompetences.fr"
+  ]
+}

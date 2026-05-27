@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Émotions et régulation — Questionnaires patients</title>
+  <link rel="stylesheet" href="../assets/cours.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html">← Catalogue des questionnaires</a>
+  </header>
+  <main class="content">
+    <h1>Émotions et régulation</h1>
+    <p class="meta">
+      <span class="badge">Licence 1</span>
+      <span class="badge">Psychologie générale</span>
+      · Notion : Approches en psychologie
+    </p>
+    <div class="warning-box">
+      ⚠️ Auto-réflexion pédagogique uniquement — pas de diagnostic. Consultez un professionnel si besoin (3114).
+    </div>
+    <p>Comprendre comment vous ressentez, nommez et régulez vos émotions. Ce thème fait le lien entre psychologie cognitive et clinique.</p>
+    <h2>Objectifs</h2>
+    <ul class="objectifs"><li>Identifier les émotions dominantes de la semaine</li><li>Repérer vos stratégies de régulation (adaptées ou moins adaptées)</li><li>Relier émotions, pensées et comportements</li></ul>
+    <h2>Questionnaire</h2>
+    <form id="qform-emotions" class="questionnaire-form">
+      <div class="q-block"><label class="q-text">J&#x27;identifie facilement ce que je ressens.</label><div class="likert"><label><input type="radio" name="e1" value="0" data-inverse="1" required /> Jamais</label><label><input type="radio" name="e1" value="1" data-inverse="1" required /> Rarement</label><label><input type="radio" name="e1" value="2" data-inverse="1" required /> Parfois</label><label><input type="radio" name="e1" value="3" data-inverse="1" required /> Souvent</label><label><input type="radio" name="e1" value="4" data-inverse="1" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Mes émotions montent rapidement et intensement.</label><div class="likert"><label><input type="radio" name="e2" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="e2" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="e2" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="e2" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="e2" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Je me sens submergé(e) par certaines émotions.</label><div class="likert"><label><input type="radio" name="e3" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="e3" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="e3" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="e3" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="e3" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Je parviens à me calmer après une montée émotionnelle.</label><div class="likert"><label><input type="radio" name="e4" value="0" data-inverse="1" required /> Jamais</label><label><input type="radio" name="e4" value="1" data-inverse="1" required /> Rarement</label><label><input type="radio" name="e4" value="2" data-inverse="1" required /> Parfois</label><label><input type="radio" name="e4" value="3" data-inverse="1" required /> Souvent</label><label><input type="radio" name="e4" value="4" data-inverse="1" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">J&#x27;évite certaines émotions (tristesse, colère, peur).</label><div class="likert"><label><input type="radio" name="e5" value="0" data-inverse="0" required /> Jamais</label><label><input type="radio" name="e5" value="1" data-inverse="0" required /> Rarement</label><label><input type="radio" name="e5" value="2" data-inverse="0" required /> Parfois</label><label><input type="radio" name="e5" value="3" data-inverse="0" required /> Souvent</label><label><input type="radio" name="e5" value="4" data-inverse="0" required /> Très souvent</label></div></div><div class="q-block"><label class="q-text">Quelle émotion revient le plus souvent ? Comment réagissez-vous ?</label><textarea class="q-textarea" name="e6" rows="3"></textarea></div>
+      <button type="submit" class="btn-primary">Voir mon bilan indicatif</button>
+    </form>
+    <div id="qresult-emotions" class="result-box" hidden>
+      <h3>Bilan indicatif</h3>
+      <p class="result-text"></p>
+      <h4>Conseils pédagogiques</h4>
+      <ul><li>Nommer une émotion précise aide à la réguler (ex. « déçu » plutôt que « mal »).</li><li>Les émotions sont des signaux, pas des ennemis à éliminer.</li><li>Un psychologue peut vous aider à développer des stratégies de régulation.</li></ul>
+      <h4>Notions liées (programme L1/L2/L3)</h4>
+      <div class="notions"><span>Thérapies cognitivo-comportementales</span><span>Neurone et synapse</span><span>Psychologie sociale</span></div>
+    </div>
+    
+<script>
+(function() {
+  const form = document.getElementById("qform-emotions");
+  const result = document.getElementById("qresult-emotions");
+  if (!form || !result) return;
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    let score = 0;
+    let count = 0;
+    form.querySelectorAll('input[type="radio"]:checked').forEach(function(input) {
+      let val = parseInt(input.value, 10);
+      if (input.dataset.inverse === "1") val = 4 - val;
+      score += val;
+      count += 1;
+    });
+    const max = count * 4;
+    const pct = max ? Math.round((score / max) * 100) : 0;
+    let msg = "Score indicatif : " + score + " / " + max + " (" + pct + "%). ";
+    if (pct >= 60) {
+      msg += "Plusieurs items ressortent : notez vos réponses ouvertes et envisagez d'en parler à un professionnel.";
+    } else if (pct >= 35) {
+      msg += "Quelques signaux à observer : le journal quotidien peut aider à mieux comprendre.";
+    } else {
+      msg += "Peu d'items élevés cette semaine : continuez à observer vos habitudes.";
+    }
+    msg += " Ce score n'est pas un diagnostic.";
+    result.hidden = false;
+    result.querySelector(".result-text").textContent = msg;
+    result.scrollIntoView({ behavior: "smooth" });
+  });
+})();
+</script>
+
+    </main>
+  <footer class="site-footer">
+    <p>Ces questionnaires ne remplacent pas un psychologue. En cas de détresse : 3114.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# API & serveur
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12
+jinja2>=3.1.4
+
+# Base de données
+sqlalchemy>=2.0.36
+aiosqlite>=0.20.0
+
+# Téléchargement & web
+requests>=2.32.3
+urllib3>=2.2.3
+beautifulsoup4>=4.12.3
+lxml>=5.3.0
+robotexclusionrulesparser>=1.7.1
+
+# PDF & texte
+pymupdf>=1.24.10
+pdfplumber>=0.11.4
+pypdf>=5.1.0
+
+# RAG & embeddings
+chromadb>=0.5.23
+sentence-transformers>=3.3.1
+
+# Utilitaires
+pydantic>=2.10.0
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.1
+httpx>=0.28.0
