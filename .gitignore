@@ -20,6 +20,7 @@ storage/chroma/
 storage/uploads/
 storage/*.db
 storage/*.db-journal
+output/storage/
 logs/*.log
 *.db-journal
 
