@@ -1,0 +1,19 @@
+{
+  "id": "banque_quiz",
+  "title": "Banque de quiz QCM",
+  "url": null,
+  "pdf_url": null,
+  "document_type": "quiz",
+  "level": "L1",
+  "subject": "quiz",
+  "legal_status": "created_by_user",
+  "license": null,
+  "enabled": true,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": null,
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "local_user_content",
+  "error": null
+}

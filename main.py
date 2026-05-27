@@ -1,215 +1,343 @@
-#!/usr/bin/env python3
-"""
-Pipeline Psych IA Ressources — collecte, validation, téléchargement et index RAG.
+"""Pipeline RAG psychologie — entrée CLI.
 
 Usage :
-  python main.py --sources sources.json --output data --dry-run
-  python main.py --sources sources.json --output data
+    python main.py --sources sources.json --output data
+    python main.py --sources sources.json --output data --dry-run
+
+Étapes :
+    1. Charger `sources.json`
+    2. Valider chaque source (légal, domaine, motifs bloqués)
+    3. Télécharger uniquement ce qui est autorisé (PDF open access)
+    4. Générer les métadonnées JSON
+    5. Extraire le texte (pypdf) + découper en chunks RAG
+    6. Écrire les index CSV/JSON et la liste `to_verify`
+    7. Initialiser les fichiers utilisateur (glossaire, quiz, fiches, règles)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
+import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT))
+from src.config_loader import SourcesConfig, load_config
+from src.downloader import DownloadResult, download_source
+from src.index_writer import write_index, write_to_verify
+from src.metadata_builder import Metadata, build_metadata, write_metadata
+from src.pdf_extractor import extract_text
+from src.rag_chunker import build_chunks, write_jsonl
+from src.source_validator import (
+    STATUS_DISABLED,
+    STATUS_DOWNLOADABLE,
+    STATUS_LOCAL_USER_CONTENT,
+    STATUS_REFERENCE_ONLY,
+    STATUS_TO_VERIFY,
+    ValidationResult,
+    validate_all,
+)
 
-from src.config_loader import load_config
-from src.downloader import download_pdf
-from src.index_writer import write_indexes
-from src.metadata_builder import build_metadata_record, write_metadata
-from src.pdf_extractor import extract_pdf_text
-from src.rag_chunker import append_rag_jsonl, chunk_text, iter_rag_records
-from src.safety import ensure_user_templates
-from src.source_validator import validate_source
+
+SYSTEM_RULES_TEXT = """\
+Règles de sécurité pédagogique — Psych IA Ressources
+
+1. L'IA ne remplace pas un psychologue.
+2. L'IA ne pose pas de diagnostic.
+3. L'IA ne propose pas de traitement médical.
+4. L'IA cite ses sources.
+5. L'IA distingue cours de base et recherche avancée.
+6. L'IA oriente vers un professionnel en cas de détresse.
+7. L'IA explique clairement les limites de ses réponses.
+
+En cas d'urgence : 15 (SAMU) ou 3114 (numéro national de prévention du suicide).
+"""
+
+USER_TEMPLATES = {
+    "glossaire_psychologie.json": {
+        "version": 1,
+        "description": "Glossaire personnel — ajoutez vos définitions et exemples.",
+        "entries": [
+            {"terme": "Conditionnement classique", "definition": "...", "source": "..."}
+        ],
+    },
+    "banque_quiz.json": {
+        "version": 1,
+        "description": "Banque de quiz QCM personnels.",
+        "quiz": [
+            {
+                "id": "q001",
+                "level": "L1",
+                "subject": "psychologie_generale",
+                "question": "Qui a formulé la théorie du conditionnement opérant ?",
+                "choices": ["Pavlov", "Skinner", "Watson", "Bandura"],
+                "answer_index": 1,
+                "explanation": "B. F. Skinner — années 1930-1950.",
+            }
+        ],
+    },
+    "banque_fiches_revision.json": {
+        "version": 1,
+        "description": "Fiches de révision créées par l'utilisateur.",
+        "fiches": [
+            {
+                "id": "fiche_001",
+                "level": "L1",
+                "subject": "psychologie_generale",
+                "title": "Apprentissage par conditionnement",
+                "summary": "...",
+                "key_points": ["...", "..."],
+            }
+        ],
+    },
+    "concepts_links.json": {
+        "version": 1,
+        "description": "Liens entre notions (graphe de concepts).",
+        "concepts": [
+            {
+                "notion": "Mémoire de travail",
+                "level": "L2",
+                "subject": "psychologie_cognitive",
+                "liens": [
+                    {"notion_liee": "Attention", "relation": "prérequis cognitif"}
+                ],
+            }
+        ],
+    },
+}
+
+logger = logging.getLogger("main")
 
 
-def _ensure_dirs(output_dir: Path) -> dict[str, Path]:
-    return {
-        "root": output_dir,
-        "downloads": output_dir / "downloads",
-        "metadata": output_dir / "metadata",
-        "rag_texts": output_dir / "rag_ready" / "texts",
-        "rag_jsonl": output_dir / "rag_ready" / "rag_chunks.jsonl",
-        "to_verify": output_dir / "to_verify",
-        "user": output_dir / "created_by_user",
+@dataclass
+class Paths:
+    """Tous les chemins de sortie du pipeline."""
+
+    output: Path
+    downloads: Path
+    metadata: Path
+    rag_ready: Path
+    rag_texts: Path
+    rag_jsonl: Path
+    to_verify: Path
+    created_by_user: Path
+    index_csv: Path
+    index_json: Path
+    to_verify_csv: Path
+
+    @classmethod
+    def from_output(cls, output: Path) -> "Paths":
+        return cls(
+            output=output,
+            downloads=output / "downloads",
+            metadata=output / "metadata",
+            rag_ready=output / "rag_ready",
+            rag_texts=output / "rag_ready" / "texts",
+            rag_jsonl=output / "rag_ready" / "rag_chunks.jsonl",
+            to_verify=output / "to_verify",
+            created_by_user=output / "created_by_user",
+            index_csv=output / "index_resources.csv",
+            index_json=output / "index_resources.json",
+            to_verify_csv=output / "to_verify" / "sources_a_verifier.csv",
+        )
+
+    def ensure(self) -> None:
+        for p in (
+            self.output,
+            self.downloads,
+            self.metadata,
+            self.rag_ready,
+            self.rag_texts,
+            self.to_verify,
+            self.created_by_user,
+        ):
+            p.mkdir(parents=True, exist_ok=True)
+
+
+def _setup_logging(verbose: bool) -> None:
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
+
+
+def _init_user_files(paths: Paths) -> list[Path]:
+    """Crée les fichiers utilisateur s'ils n'existent pas (no overwrite)."""
+    created: list[Path] = []
+    for name, payload in USER_TEMPLATES.items():
+        target = paths.created_by_user / name
+        if not target.exists():
+            target.write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            created.append(target)
+    rules = paths.created_by_user / "system_rules.txt"
+    if not rules.exists():
+        rules.write_text(SYSTEM_RULES_TEXT, encoding="utf-8")
+        created.append(rules)
+    return created
+
+
+def _print_dry_run_report(config: SourcesConfig, results: list[ValidationResult], paths: Paths) -> None:
+    """Affiche un récap lisible sans rien écrire (sauf templates utilisateur)."""
+    bins: dict[str, list[ValidationResult]] = {
+        STATUS_DOWNLOADABLE: [],
+        STATUS_REFERENCE_ONLY: [],
+        STATUS_DISABLED: [],
+        STATUS_LOCAL_USER_CONTENT: [],
+        STATUS_TO_VERIFY: [],
     }
+    for r in results:
+        bins.setdefault(r.status, []).append(r)
 
-
-def _print_header(title: str) -> None:
-    print(f"\n{'=' * 60}")
-    print(title)
-    print("=" * 60)
-
-
-def run_pipeline(
-    sources_path: Path,
-    output_dir: Path,
-    *,
-    dry_run: bool = False,
-    skip_download: bool = False,
-) -> int:
-    config = load_config(sources_path)
-    dirs = _ensure_dirs(output_dir)
-
-    if not dry_run:
-        for key in ("downloads", "metadata", "rag_texts", "to_verify", "user"):
-            dirs[key].mkdir(parents=True, exist_ok=True)
-        # Réinitialiser le JSONL RAG à chaque exécution complète
-        if dirs["rag_jsonl"].exists():
-            dirs["rag_jsonl"].unlink()
-
-    enabled_sources = [s for s in config.sources if s.get("enabled")]
-    downloadable: list[dict] = []
-    ignored: list[tuple[dict, list[str]]] = []
-    metadata_records: list[dict] = []
-    reasons_map: dict[str, list[str]] = {}
-    files_planned: list[str] = []
-
-    _print_header("1. Chargement sources.json")
+    print("=" * 72)
+    print("DRY-RUN — Aucun fichier de données ne sera écrit (sauf templates user).")
+    print("=" * 72)
     print(f"Description : {config.description}")
     print(f"Sources totales : {len(config.sources)}")
-    print(f"Sources activées : {len(enabled_sources)}")
-    print(f"Éditeurs de confiance : {', '.join(config.trusted_publishers)}")
-    print(f"Motifs bloqués : {', '.join(config.blocked_patterns)}")
+    print()
 
-    _print_header("2. Validation des sources")
-    for source in config.sources:
-        validation = validate_source(source, config.trusted_publishers, config.blocked_patterns)
-        reasons_map[str(source.get("id"))] = validation.reasons
+    for status, label in [
+        (STATUS_DOWNLOADABLE, "À télécharger"),
+        (STATUS_REFERENCE_ONLY, "Référence seulement"),
+        (STATUS_DISABLED, "Désactivées"),
+        (STATUS_LOCAL_USER_CONTENT, "Contenu utilisateur local"),
+        (STATUS_TO_VERIFY, "À vérifier"),
+    ]:
+        rs = bins.get(status, [])
+        print(f"[{label}] ({len(rs)})")
+        for r in rs:
+            print(f"  - {r.source.id} :: {r.source.title}")
+            if r.reasons:
+                print(f"      raison(s) : {' ; '.join(r.reasons)}")
+        print()
 
-        meta_path = dirs["metadata"] / f"{source.get('id')}.json"
-        files_planned.append(str(meta_path.relative_to(output_dir)))
+    print("Fichiers/dossiers qui SERAIENT créés :")
+    print(f"  {paths.downloads}/")
+    print(f"  {paths.metadata}/<source_id>.json")
+    print(f"  {paths.index_csv}")
+    print(f"  {paths.index_json}")
+    print(f"  {paths.to_verify_csv}")
+    print(f"  {paths.rag_texts}/<source_id>.txt")
+    print(f"  {paths.rag_jsonl}")
+    print(f"  {paths.created_by_user}/{{glossaire,banque_quiz,fiches,concepts_links,system_rules}}.*")
 
-        if source.get("enabled") and validation.can_download:
-            downloadable.append(source)
-            print(f"  [TÉLÉCHARGABLE] {source.get('id')} — {source.get('title')}")
-        elif source.get("enabled"):
-            ignored.append((source, validation.reasons))
-            print(f"  [IGNORÉE]      {source.get('id')} — {validation.index_status}")
-            for reason in validation.reasons:
-                print(f"                 → {reason}")
-        else:
-            ignored.append((source, validation.reasons))
-            print(f"  [DÉSACTIVÉE]    {source.get('id')}")
 
-    _print_header("3. Fichiers utilisateur et règles de sécurité")
-    user_files = ensure_user_templates(dirs["user"], project_root=ROOT, dry_run=dry_run)
-    for uf in user_files:
-        rel = uf.relative_to(output_dir) if uf.is_relative_to(output_dir) else uf
-        files_planned.append(str(rel))
-        print(f"  {'[DRY-RUN] ' if dry_run else ''}Modèle : {rel}")
+def run(
+    sources_path: Path,
+    output_path: Path,
+    *,
+    dry_run: bool,
+    delay_seconds: float,
+) -> int:
+    """Exécute le pipeline complet (ou simulation si `dry_run`)."""
+    paths = Paths.from_output(output_path)
+    paths.ensure()
 
-    _print_header("4. Téléchargement et métadonnées")
-    rag_sources_processed = 0
+    config = load_config(sources_path)
+    logger.info("Sources chargées : %d", len(config.sources))
 
-    for source in config.sources:
-        validation = validate_source(source, config.trusted_publishers, config.blocked_patterns)
-        local_path: str | None = None
-        downloaded = False
-        error: str | None = None
-        status = validation.index_status
+    results = validate_all(
+        config.sources,
+        blocked_patterns=config.blocked_patterns,
+        trusted_publishers=config.trusted_publishers,
+    )
 
-        if validation.can_download and not skip_download:
-            pdf_dest = dirs["downloads"] / f"{source.get('id')}.pdf"
-            files_planned.append(str(pdf_dest.relative_to(output_dir)))
-
-            if dry_run:
-                print(f"  [DRY-RUN] Téléchargement : {source.get('id')} → {pdf_dest.name}")
-                status = "downloadable"
-            else:
-                path, dl_error = download_pdf(source, dirs["downloads"], dry_run=False)
-                if path:
-                    downloaded = True
-                    local_path = str(path.relative_to(output_dir))
-                    status = "downloaded"
-                    print(f"  [OK] Téléchargé : {source.get('id')} ({path.stat().st_size // 1024} Ko)")
-
-                    text_path, ext_error = extract_pdf_text(path, dirs["rag_texts"])
-                    if text_path:
-                        files_planned.append(str(text_path.relative_to(output_dir)))
-                        text = text_path.read_text(encoding="utf-8")
-                        chunks = chunk_text(text)
-                        records = list(iter_rag_records(source, chunks))
-                        append_rag_jsonl(records, dirs["rag_jsonl"])
-                        rag_sources_processed += 1
-                        print(f"       Texte extrait : {len(chunks)} chunks RAG")
-                    else:
-                        error = ext_error
-                        status = "error"
-                        print(f"  [ERREUR] Extraction : {source.get('id')} — {ext_error}")
-                else:
-                    error = dl_error
-                    status = "error"
-                    print(f"  [ERREUR] Téléchargement : {source.get('id')} — {dl_error}")
-        elif validation.can_download and skip_download:
-            status = "downloadable"
-
-        record = build_metadata_record(
-            source,
-            index_status=status,
-            downloaded=downloaded,
-            local_path=local_path,
-            error=error,
-        )
-        metadata_records.append(record)
-        write_metadata(dirs["metadata"], record, dry_run=dry_run)
-
-    _print_header("5. Index globaux")
-    index_paths = write_indexes(output_dir, metadata_records, reasons_map, dry_run=dry_run)
-    for name, path in index_paths.items():
-        files_planned.append(str(path.relative_to(output_dir)))
-        print(f"  {'[DRY-RUN] ' if dry_run else ''}Index {name} : {path.relative_to(output_dir)}")
-
-    _print_header("Résumé")
-    print(f"Mode              : {'DRY-RUN' if dry_run else 'EXÉCUTION'}")
-    print(f"Sources activées  : {len(enabled_sources)}")
-    print(f"Téléchargeables   : {len(downloadable)}")
-    print(f"Ignorées/désactiv.: {len(ignored)}")
-    print(f"PDF traités RAG   : {rag_sources_processed}")
-    print(f"Dossier sortie    : {output_dir.resolve()}")
+    _init_user_files(paths)
 
     if dry_run:
-        print("\nFichiers qui seraient créés :")
-        for fp in sorted(set(files_planned)):
-            print(f"  - {fp}")
+        _print_dry_run_report(config, results, paths)
+        return 0
 
+    metadatas: list[Metadata] = []
+    project_root = Path(__file__).resolve().parent
+
+    import time
+
+    to_download = [r for r in results if r.status == STATUS_DOWNLOADABLE]
+    for i, r in enumerate(to_download):
+        if i > 0 and delay_seconds > 0:
+            time.sleep(delay_seconds)
+
+        dl = download_source(r.source, dest_dir=paths.downloads)
+        meta = build_metadata(r.source, r, dl, project_root=project_root)
+        metadatas.append(meta)
+        write_metadata(meta, paths.metadata)
+
+        if dl.success and dl.local_path is not None:
+            extraction = extract_text(dl.local_path, dest_dir=paths.rag_texts, source_id=r.source.id)
+            if extraction.error:
+                logger.warning("Extraction PDF échouée pour %s : %s", r.source.id, extraction.error)
+                continue
+
+            text = (extraction.text_path or Path()).read_text(encoding="utf-8") if extraction.text_path else ""
+            chunks = build_chunks(r.source, text)
+            existing = []
+            if paths.rag_jsonl.exists():
+                with paths.rag_jsonl.open("r", encoding="utf-8") as fh:
+                    for line in fh:
+                        try:
+                            obj = json.loads(line)
+                            if obj.get("source_id") != r.source.id:
+                                existing.append(line.rstrip("\n"))
+                        except json.JSONDecodeError:
+                            continue
+            with paths.rag_jsonl.open("w", encoding="utf-8") as fh:
+                for line in existing:
+                    fh.write(line + "\n")
+                for ch in chunks:
+                    fh.write(json.dumps(ch.to_dict(), ensure_ascii=False) + "\n")
+            logger.info("Indexé %s — %d chunks", r.source.id, len(chunks))
+
+    for r in results:
+        if r.status == STATUS_DOWNLOADABLE:
+            continue
+        meta = build_metadata(r.source, r, None, project_root=project_root)
+        metadatas.append(meta)
+        write_metadata(meta, paths.metadata)
+
+    write_index(metadatas, csv_path=paths.index_csv, json_path=paths.index_json)
+    flagged = write_to_verify(results, csv_path=paths.to_verify_csv)
+    logger.info(
+        "Index écrit : %d sources, %d à vérifier",
+        len(metadatas),
+        flagged,
+    )
+    if not paths.rag_jsonl.exists():
+        paths.rag_jsonl.touch()
     return 0
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Pipeline Psych IA Ressources")
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="psych-ia-ressources",
+        description="Pipeline de collecte et indexation RAG de sources libres en psychologie",
+    )
     parser.add_argument("--sources", default="sources.json", help="Chemin vers sources.json")
     parser.add_argument("--output", default="data", help="Dossier de sortie (data/)")
-    parser.add_argument("--dry-run", action="store_true", help="Simulation sans écriture ni téléchargement")
-    parser.add_argument(
-        "--skip-download",
-        action="store_true",
-        help="Valider et indexer sans télécharger (métadonnées uniquement)",
-    )
-    args = parser.parse_args()
+    parser.add_argument("--dry-run", action="store_true", help="Affiche le plan sans rien télécharger")
+    parser.add_argument("--delay", type=float, default=2.0, help="Délai entre téléchargements (secondes)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Logs DEBUG")
+    args = parser.parse_args(argv)
 
-    sources_path = Path(args.sources)
-    if not sources_path.is_absolute():
-        sources_path = ROOT / sources_path
-
-    output_dir = Path(args.output)
-    if not output_dir.is_absolute():
-        output_dir = ROOT / output_dir
+    _setup_logging(args.verbose)
 
     try:
-        return run_pipeline(
-            sources_path,
-            output_dir,
+        return run(
+            Path(args.sources),
+            Path(args.output),
             dry_run=args.dry_run,
-            skip_download=args.skip_download,
+            delay_seconds=args.delay,
         )
-    except (FileNotFoundError, ValueError) as exc:
-        print(f"Erreur : {exc}", file=sys.stderr)
-        return 1
+    except FileNotFoundError as exc:
+        logger.error("Fichier introuvable : %s", exc)
+        return 2
+    except ValueError as exc:
+        logger.error("Configuration invalide : %s", exc)
+        return 2
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

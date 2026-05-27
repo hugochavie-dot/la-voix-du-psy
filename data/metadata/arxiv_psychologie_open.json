@@ -1,0 +1,19 @@
+{
+  "id": "arxiv_psychologie_open",
+  "title": "Psychologie — prépublication open access (arXiv)",
+  "url": "https://arxiv.org/abs/2212.02797",
+  "pdf_url": "https://arxiv.org/pdf/2212.02797.pdf",
+  "document_type": "article_scientifique",
+  "level": "recherche_avancee",
+  "subject": "psychologie_generale",
+  "legal_status": "open_access",
+  "license": null,
+  "enabled": false,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": "Désactivé — document hors psychologie (face swapping). Supprimer de la base si déjà importé.",
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "disabled",
+  "error": null
+}

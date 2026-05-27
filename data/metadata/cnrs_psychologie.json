@@ -1,0 +1,19 @@
+{
+  "id": "cnrs_psychologie",
+  "title": "CNRS — psychologie cognitive et sociale",
+  "url": "https://www.cnrs.fr/fr/science/psycho-cogn",
+  "pdf_url": null,
+  "document_type": "autre",
+  "level": "recherche_avancee",
+  "subject": "psychologie_cognitive",
+  "legal_status": "open_access",
+  "license": null,
+  "enabled": true,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": null,
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "reference_only",
+  "error": null
+}

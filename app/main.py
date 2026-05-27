@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,7 +16,6 @@ from app.services.questionnaires_exporter import QUESTIONNAIRES_DIR
 from app.services.liner_exporter import OUTPUT_DIR as LINER_DIR
 from app.services.html_exporter import OUTPUT_DIR
 from app.services.source_manager import load_concepts_from_json
-from config.settings import settings
 
 ADMIN_DIR = Path(__file__).parent / "admin"
 templates = Jinja2Templates(directory=str(ADMIN_DIR / "templates"))
@@ -50,15 +48,6 @@ app = FastAPI(
     description="Gestion documentaire pédagogique légale — psychologie L1/L2/L3",
     version="1.0.0",
     lifespan=lifespan,
-)
-
-_origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_origins or ["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 app.include_router(api_router, prefix="/api")

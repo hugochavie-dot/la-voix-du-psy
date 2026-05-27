@@ -1,58 +1,72 @@
-"""Extraction de texte depuis les PDF téléchargés (pypdf)."""
+"""Extraction de texte brut à partir d'un PDF avec `pypdf`.
+
+Le texte est nettoyé minimalement (lignes vides multiples → simple).
+Les sauts de page ne sont pas conservés ; les chunks ultérieurs sont basés
+sur les caractères.
+"""
 
 from __future__ import annotations
 
+import logging
+import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from pypdf import PdfReader
 
+logger = logging.getLogger("pdf_extractor")
 
-def extract_pdf_text(pdf_path: Path, texts_dir: Path, *, dry_run: bool = False) -> tuple[Path | None, str | None]:
-    """
-    Extrait le texte brut d'un PDF et le sauvegarde dans data/rag_ready/texts/.
 
-    Retourne (chemin_texte, message_erreur).
-    """
-    if not pdf_path.is_file():
-        return None, f"PDF introuvable : {pdf_path}"
+@dataclass
+class ExtractionResult:
+    """Résultat d'extraction d'un PDF."""
 
-    dest = texts_dir / f"{pdf_path.stem}.txt"
-    if dry_run:
-        return dest, None
+    source_id: str
+    pdf_path: Path
+    text_path: Path | None
+    n_pages: int
+    n_chars: int
+    error: str | None = None
 
-    texts_dir.mkdir(parents=True, exist_ok=True)
+
+_WHITESPACE_RE = re.compile(r"[ \t]+")
+_BLANKLINE_RE = re.compile(r"\n{3,}")
+
+
+def _clean(raw: str) -> str:
+    cleaned = _WHITESPACE_RE.sub(" ", raw)
+    cleaned = _BLANKLINE_RE.sub("\n\n", cleaned)
+    return cleaned.strip()
+
+
+def extract_text(pdf_path: Path, *, dest_dir: Path, source_id: str) -> ExtractionResult:
+    """Extrait le texte du PDF et le sauvegarde dans `dest_dir/<source_id>.txt`."""
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    out = dest_dir / f"{source_id}.txt"
     try:
         reader = PdfReader(str(pdf_path))
-        parts: list[str] = []
+        pages: list[str] = []
         for page in reader.pages:
-            text = page.extract_text() or ""
-            if text.strip():
-                parts.append(text.strip())
-        full_text = "\n\n".join(parts).strip()
-        if not full_text:
-            return None, "aucun texte extrait du PDF"
-        dest.write_text(full_text, encoding="utf-8")
-        return dest, None
-    except Exception as exc:  # noqa: BLE001 — erreur documentaire variée
-        return None, str(exc)
-
-
-def load_text(text_path: Path) -> str:
-    """Charge un fichier texte extrait."""
-    return text_path.read_text(encoding="utf-8")
-
-
-def source_from_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
-    """Reconstruit un dict source minimal depuis une métadonnée."""
-    return {
-        "id": metadata.get("id"),
-        "title": metadata.get("title"),
-        "url": metadata.get("url"),
-        "pdf_url": metadata.get("pdf_url"),
-        "document_type": metadata.get("document_type"),
-        "level": metadata.get("level"),
-        "subject": metadata.get("subject"),
-        "legal_status": metadata.get("legal_status"),
-        "license": metadata.get("license"),
-    }
+            try:
+                pages.append(page.extract_text() or "")
+            except Exception as exc:  # noqa: BLE001 — résilience PDF
+                logger.warning("Page illisible dans %s : %s", pdf_path.name, exc)
+                pages.append("")
+        text = _clean("\n\n".join(pages))
+        out.write_text(text, encoding="utf-8")
+        return ExtractionResult(
+            source_id=source_id,
+            pdf_path=pdf_path,
+            text_path=out,
+            n_pages=len(reader.pages),
+            n_chars=len(text),
+        )
+    except Exception as exc:  # noqa: BLE001
+        return ExtractionResult(
+            source_id=source_id,
+            pdf_path=pdf_path,
+            text_path=None,
+            n_pages=0,
+            n_chars=0,
+            error=f"extraction PDF échouée : {exc}",
+        )

@@ -1,0 +1,19 @@
+{
+  "id": "hal_psychologie_exemple",
+  "title": "HAL — recherche psychologie (portail)",
+  "url": "https://hal.science/search/index/?q=psychologie&domain=shs",
+  "pdf_url": null,
+  "document_type": "article_scientifique",
+  "level": "recherche_avancee",
+  "subject": "psychologie_generale",
+  "legal_status": "open_access",
+  "license": null,
+  "enabled": false,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": "Désactivé — utiliser les cours FR et OpenStax",
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "disabled",
+  "error": null
+}

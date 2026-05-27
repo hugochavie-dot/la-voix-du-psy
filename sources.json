@@ -33,11 +33,11 @@
       "level": "L1",
       "subject": "psychologie_generale",
       "legal_status": "open_access",
-      "license": "CC BY 4.0",
+      "license": "CC BY-NC-SA 4.0",
       "enabled": true,
       "download": true,
       "auto_index": false,
-      "notes": "Manuel complet CC BY (~55 Mo) — indexation: python scripts/index_documents.py --document-id N"
+      "notes": "Manuel complet CC BY-NC-SA 4.0 (~55 Mo) — usage non commercial, partage à l'identique"
     },
     {
       "id": "hal_pratiques_recherche_ouvertes",

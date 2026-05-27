@@ -1,0 +1,167 @@
+{
+  "generated_at": "2026-05-27 09:21 UTC",
+  "courses": [
+    {
+      "document_id": 1,
+      "slug": "1-psychology-2e",
+      "title": "Psychology 2e",
+      "level": "L1",
+      "subject": "psychologie_generale",
+      "href": "1-psychology-2e/index.html",
+      "page_count": 755
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/psychologie_generale",
+      "title": "Cours Psychologie générale (Licence 1)",
+      "level": "L1",
+      "subject": "psychologie_generale",
+      "href": "fr/L1/psychologie_generale/index.html",
+      "page_count": 3
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/psychologie_sociale",
+      "title": "Cours Psychologie sociale (Licence 1)",
+      "level": "L1",
+      "subject": "psychologie_sociale",
+      "href": "fr/L1/psychologie_sociale/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/psychologie_du_developpement",
+      "title": "Cours Développement (Licence 1)",
+      "level": "L1",
+      "subject": "psychologie_du_developpement",
+      "href": "fr/L1/psychologie_du_developpement/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/neurosciences",
+      "title": "Cours Neurosciences (Licence 1)",
+      "level": "L1",
+      "subject": "neurosciences",
+      "href": "fr/L1/neurosciences/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/statistiques",
+      "title": "Cours Statistiques (Licence 1)",
+      "level": "L1",
+      "subject": "statistiques",
+      "href": "fr/L1/statistiques/index.html",
+      "page_count": 1
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/methodologie_experimentale",
+      "title": "Cours Méthodologie (Licence 1)",
+      "level": "L1",
+      "subject": "methodologie_experimentale",
+      "href": "fr/L1/methodologie_experimentale/index.html",
+      "page_count": 1
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L1/epistemologie",
+      "title": "Cours Épistémologie (Licence 1)",
+      "level": "L1",
+      "subject": "epistemologie",
+      "href": "fr/L1/epistemologie/index.html",
+      "page_count": 1
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/psychologie_sociale",
+      "title": "Cours Psychologie sociale (Licence 2)",
+      "level": "L2",
+      "subject": "psychologie_sociale",
+      "href": "fr/L2/psychologie_sociale/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/psychologie_du_developpement",
+      "title": "Cours Développement (Licence 2)",
+      "level": "L2",
+      "subject": "psychologie_du_developpement",
+      "href": "fr/L2/psychologie_du_developpement/index.html",
+      "page_count": 1
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/statistiques",
+      "title": "Cours Statistiques (Licence 2)",
+      "level": "L2",
+      "subject": "statistiques",
+      "href": "fr/L2/statistiques/index.html",
+      "page_count": 4
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/psychologie_cognitive",
+      "title": "Cours Psychologie cognitive (Licence 2)",
+      "level": "L2",
+      "subject": "psychologie_cognitive",
+      "href": "fr/L2/psychologie_cognitive/index.html",
+      "page_count": 5
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/psychopathologie",
+      "title": "Cours Psychopathologie (Licence 2)",
+      "level": "L2",
+      "subject": "psychopathologie",
+      "href": "fr/L2/psychopathologie/index.html",
+      "page_count": 4
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L2/psychologie_differentielle",
+      "title": "Cours Psychologie différentielle (Licence 2)",
+      "level": "L2",
+      "subject": "psychologie_differentielle",
+      "href": "fr/L2/psychologie_differentielle/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L3/methodologie_experimentale",
+      "title": "Cours Méthodologie (Licence 3)",
+      "level": "L3",
+      "subject": "methodologie_experimentale",
+      "href": "fr/L3/methodologie_experimentale/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L3/psychologie_clinique",
+      "title": "Cours Psychologie clinique (Licence 3)",
+      "level": "L3",
+      "subject": "psychologie_clinique",
+      "href": "fr/L3/psychologie_clinique/index.html",
+      "page_count": 4
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L3/psychologie_du_travail",
+      "title": "Cours Psychologie du travail (Licence 3)",
+      "level": "L3",
+      "subject": "psychologie_du_travail",
+      "href": "fr/L3/psychologie_du_travail/index.html",
+      "page_count": 2
+    },
+    {
+      "document_id": 0,
+      "slug": "fr/L3/memoire_recherche",
+      "title": "Cours Mémoire / recherche (Licence 3)",
+      "level": "L3",
+      "subject": "memoire_recherche",
+      "href": "fr/L3/memoire_recherche/index.html",
+      "page_count": 1
+    }
+  ]
+}

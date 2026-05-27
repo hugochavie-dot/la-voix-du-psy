@@ -1,63 +1,111 @@
-"""Téléchargement sécurisé des PDF open access."""
+"""Téléchargement HTTP poli des PDFs autorisés.
+
+Caractéristiques :
+- User-Agent identifiable (transparence),
+- timeout généreux pour les gros PDF (~60 Mo),
+- streaming par chunks (mémoire constante),
+- délai configurable entre requêtes (pas de scraping agressif),
+- vérification basique du Content-Type / magic bytes,
+- compatible Windows/Mac/Linux (utilise `pathlib`).
+"""
 
 from __future__ import annotations
 
+import logging
 import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 import requests
 
+from src.config_loader import Source
+
+USER_AGENT = "psych-ia-ressources/1.0 (educational use; open-access only)"
+DEFAULT_TIMEOUT = 90
+DEFAULT_CHUNK = 1 << 15  # 32 KiB
 DEFAULT_DELAY_SECONDS = 2.0
-DEFAULT_TIMEOUT = 120
-CHUNK_SIZE = 8192
-USER_AGENT = (
-    "PsychIARessources/1.0 (+https://github.com/local/psych-ia-ressources; "
-    "open-access educational pipeline)"
-)
+PDF_MAGIC = b"%PDF-"
+
+logger = logging.getLogger("downloader")
 
 
-def download_pdf(
-    source: dict[str, Any],
-    dest_dir: Path,
+@dataclass
+class DownloadResult:
+    """Résultat d'un téléchargement individuel."""
+
+    source_id: str
+    success: bool
+    local_path: Path | None = None
+    size_bytes: int = 0
+    error: str | None = None
+
+
+def _safe_filename(source: Source) -> str:
+    """Nom de fichier portable basé sur l'id de la source."""
+    safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in source.id)
+    return f"{safe}.pdf"
+
+
+def download_source(
+    source: Source,
     *,
-    delay_seconds: float = DEFAULT_DELAY_SECONDS,
-    dry_run: bool = False,
-) -> tuple[Path | None, str | None]:
-    """
-    Télécharge le PDF d'une source validée.
+    dest_dir: Path,
+    timeout: int = DEFAULT_TIMEOUT,
+    chunk_size: int = DEFAULT_CHUNK,
+    session: requests.Session | None = None,
+) -> DownloadResult:
+    """Télécharge un PDF unique vers `dest_dir`."""
+    if not source.pdf_url:
+        return DownloadResult(source.id, False, error="pdf_url manquante")
 
-    Retourne (chemin_local, message_erreur).
-    """
-    pdf_url = source.get("pdf_url")
-    if not pdf_url:
-        return None, "pdf_url absente"
-
-    source_id = str(source.get("id", "document"))
     dest_dir.mkdir(parents=True, exist_ok=True)
-    dest_path = dest_dir / f"{source_id}.pdf"
+    target = dest_dir / _safe_filename(source)
+    sess = session or requests.Session()
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/pdf,*/*;q=0.8"}
 
-    if dry_run:
-        return dest_path, None
-
-    headers = {"User-Agent": USER_AGENT}
     try:
-        time.sleep(delay_seconds)
-        with requests.get(str(pdf_url), headers=headers, stream=True, timeout=DEFAULT_TIMEOUT) as resp:
+        logger.info("Téléchargement %s -> %s", source.id, target.name)
+        with sess.get(source.pdf_url, headers=headers, stream=True, timeout=timeout) as resp:
             resp.raise_for_status()
-            content_type = resp.headers.get("Content-Type", "")
-            if "pdf" not in content_type.lower() and not str(pdf_url).lower().endswith(".pdf"):
-                return None, f"type de contenu inattendu : {content_type or 'inconnu'}"
+            content_type = resp.headers.get("Content-Type", "").lower()
+            if content_type and "pdf" not in content_type and "octet-stream" not in content_type:
+                logger.warning("Content-Type inattendu pour %s : %s", source.id, content_type)
 
-            with dest_path.open("wb") as out:
-                for chunk in resp.iter_content(chunk_size=CHUNK_SIZE):
-                    if chunk:
-                        out.write(chunk)
+            tmp = target.with_suffix(target.suffix + ".part")
+            total = 0
+            with tmp.open("wb") as fh:
+                for chunk in resp.iter_content(chunk_size=chunk_size):
+                    if not chunk:
+                        continue
+                    fh.write(chunk)
+                    total += len(chunk)
+            tmp.replace(target)
 
-        if dest_path.stat().st_size < 1024:
-            dest_path.unlink(missing_ok=True)
-            return None, "fichier téléchargé trop petit (probable erreur HTML)"
+        with target.open("rb") as fh:
+            head = fh.read(8)
+        if not head.startswith(PDF_MAGIC):
+            target.unlink(missing_ok=True)
+            return DownloadResult(source.id, False, error="fichier téléchargé non reconnu comme PDF")
 
-        return dest_path, None
+        return DownloadResult(source.id, True, local_path=target, size_bytes=total)
     except requests.RequestException as exc:
-        return None, str(exc)
+        return DownloadResult(source.id, False, error=f"erreur HTTP : {exc}")
+    except OSError as exc:
+        return DownloadResult(source.id, False, error=f"erreur disque : {exc}")
+
+
+def download_many(
+    sources: list[Source],
+    *,
+    dest_dir: Path,
+    delay_seconds: float = DEFAULT_DELAY_SECONDS,
+    timeout: int = DEFAULT_TIMEOUT,
+) -> list[DownloadResult]:
+    """Télécharge en série avec un délai entre chaque source (politesse)."""
+    results: list[DownloadResult] = []
+    session = requests.Session()
+    for i, src in enumerate(sources):
+        if i > 0 and delay_seconds > 0:
+            time.sleep(delay_seconds)
+        results.append(download_source(src, dest_dir=dest_dir, timeout=timeout, session=session))
+    return results

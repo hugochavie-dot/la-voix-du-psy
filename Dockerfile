@@ -20,4 +20,4 @@ RUN mkdir -p storage/chroma storage/uploads logs
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "python scripts/render_init.py && python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

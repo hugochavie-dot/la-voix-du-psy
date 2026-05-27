@@ -1,0 +1,19 @@
+{
+  "id": "maquette_l1_l2_l3",
+  "title": "Référentiel RNCP Licence Psychologie (France Compétences)",
+  "url": "https://www.francecompetences.fr/recherche/rncp/37274/",
+  "pdf_url": null,
+  "document_type": "referentiel",
+  "level": "mixte",
+  "subject": "psychologie_generale",
+  "legal_status": "open_access",
+  "license": null,
+  "enabled": true,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": "Page publique de référence — pas de PDF automatique",
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "reference_only",
+  "error": null
+}

@@ -8,19 +8,18 @@ venv/
 dist/
 build/
 
-# Données locales (PDFs téléchargés)
+# Données binaires lourdes — re-téléchargées au démarrage via main.py
 data/**/*.pdf
-data/**/*.html
 data/**/*.docx
 data2/**/*.pdf
 data2/**/*.html
 data2/**/*.docx
 
-# Export HTML (régénérable)
-output/cours/
-
-# Index & logs
+# Index & logs régénérables
 storage/chroma/
+storage/uploads/
+storage/*.db
+storage/*.db-journal
 logs/*.log
 *.db-journal
 
@@ -32,3 +31,6 @@ logs/*.log
 # Modèles ML cache
 .cache/
 models/
+
+# Tools temporaires
+.tools/

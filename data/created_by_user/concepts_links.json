@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "Liens entre notions (graphe de concepts).",
+  "concepts": [
+    {
+      "notion": "Mémoire de travail",
+      "level": "L2",
+      "subject": "psychologie_cognitive",
+      "liens": [
+        {
+          "notion_liee": "Attention",
+          "relation": "prérequis cognitif"
+        }
+      ]
+    }
+  ]
+}

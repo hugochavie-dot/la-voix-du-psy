@@ -1,0 +1,19 @@
+{
+  "id": "banque_fiches",
+  "title": "Banque de fiches de révision",
+  "url": null,
+  "pdf_url": null,
+  "document_type": "fiche_revision",
+  "level": "L1",
+  "subject": "fiches_de_revision",
+  "legal_status": "created_by_user",
+  "license": null,
+  "enabled": true,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": null,
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "local_user_content",
+  "error": null
+}

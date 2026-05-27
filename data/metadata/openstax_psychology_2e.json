@@ -1,0 +1,19 @@
+{
+  "id": "openstax_psychology_2e",
+  "title": "OpenStax Psychology 2e",
+  "url": "https://openstax.org/details/books/psychology-2e",
+  "pdf_url": "https://assets.openstax.org/oscms-prodcms/media/documents/Psychology2e_WEB.pdf",
+  "document_type": "manuel_libre",
+  "level": "L1",
+  "subject": "psychologie_generale",
+  "legal_status": "open_access",
+  "license": "CC BY-NC-SA 4.0",
+  "enabled": true,
+  "download": true,
+  "downloaded": true,
+  "local_path": "data/downloads/openstax_psychology_2e.pdf",
+  "notes": "Manuel complet CC BY-NC-SA 4.0 (~55 Mo) — usage non commercial, partage à l'identique",
+  "date_processed": "2026-05-27T11:36:20Z",
+  "status": "downloaded",
+  "error": null
+}

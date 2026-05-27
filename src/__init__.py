@@ -1,1 +1,3 @@
-"""Pipeline de collecte, validation et indexation RAG — Psych IA Ressources."""
+"""Package src — pipeline RAG psychologie (sources libres uniquement)."""
+
+__version__ = "1.0.0"

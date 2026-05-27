@@ -1,129 +1,100 @@
-"""Validation légale et technique des sources avant téléchargement."""
+"""Validation métier de chaque source.
+
+Décide, pour chaque source :
+- si elle est **téléchargeable** (toutes les conditions sont réunies),
+- sinon, **pourquoi** elle est ignorée (raison lisible).
+
+Le résultat sert ensuite au `downloader`, au `metadata_builder`, et à
+l'index `to_verify/sources_a_verifier.csv`.
+"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
-from urllib.parse import urlparse
+from dataclasses import dataclass
+
+from src.config_loader import Source
+from src.safety import (
+    contains_blocked_pattern,
+    has_legal_clearance,
+    is_trusted_domain,
+)
+
+
+STATUS_DOWNLOADABLE = "downloadable"
+STATUS_REFERENCE_ONLY = "reference_only"
+STATUS_DISABLED = "disabled"
+STATUS_LOCAL_USER_CONTENT = "local_user_content"
+STATUS_TO_VERIFY = "to_verify"
 
 
 @dataclass
 class ValidationResult:
     """Résultat de validation pour une source."""
 
-    source_id: str
-    can_download: bool = False
-    index_status: str = "reference_only"
-    reasons: list[str] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
+    source: Source
+    status: str
+    reasons: list[str]
 
-    def add_reason(self, reason: str) -> None:
-        self.reasons.append(reason)
+    @property
+    def downloadable(self) -> bool:
+        return self.status == STATUS_DOWNLOADABLE
 
-
-def _host(url: str) -> str:
-    return urlparse(url).netloc.lower().strip()
-
-
-def _domain_trusted(url: str, trusted_publishers: list[str]) -> bool:
-    host = _host(url)
-    if not host:
-        return False
-    for publisher in trusted_publishers:
-        pub = publisher.lower().strip()
-        if host == pub or host.endswith(f".{pub}"):
-            return True
-    return False
+    @property
+    def is_local_user_content(self) -> bool:
+        return self.status == STATUS_LOCAL_USER_CONTENT
 
 
-def _contains_blocked_pattern(text: str, blocked_patterns: list[str]) -> str | None:
-    lowered = text.lower()
-    for pattern in blocked_patterns:
-        if pattern.lower() in lowered:
-            return pattern
-    return None
+def validate_source(
+    source: Source,
+    *,
+    blocked_patterns: list[str],
+    trusted_publishers: list[str],
+) -> ValidationResult:
+    """Évalue une source et retourne son statut + raisons."""
+    reasons: list[str] = []
+
+    if (source.legal_status or "").lower() == "created_by_user":
+        return ValidationResult(source, STATUS_LOCAL_USER_CONTENT, ["Contenu local utilisateur"])
+
+    if not source.enabled:
+        reasons.append("`enabled=false`")
+        return ValidationResult(source, STATUS_DISABLED, reasons)
+
+    if not source.download:
+        reasons.append("`download=false` — référencée uniquement")
+        return ValidationResult(source, STATUS_REFERENCE_ONLY, reasons)
+
+    if not has_legal_clearance(source.legal_status, source.license):
+        reasons.append("statut légal non `open_access` et pas de licence explicite")
+    if not source.pdf_url:
+        reasons.append("aucun `pdf_url` fourni")
+
+    candidate_url = source.pdf_url or source.url
+    blocked = contains_blocked_pattern(candidate_url, blocked_patterns)
+    if blocked:
+        reasons.append(f"URL contient un motif bloqué : `{blocked}`")
+
+    if candidate_url and not is_trusted_domain(candidate_url, trusted_publishers):
+        reasons.append("domaine hors liste de `trusted_publishers`")
+
+    if reasons:
+        return ValidationResult(source, STATUS_TO_VERIFY, reasons)
+
+    return ValidationResult(source, STATUS_DOWNLOADABLE, ["Toutes les conditions sont remplies"])
 
 
-def _urls_to_check(source: dict[str, Any]) -> list[str]:
-    urls: list[str] = []
-    for key in ("url", "pdf_url"):
-        value = source.get(key)
-        if value:
-            urls.append(str(value))
-    return urls
-
-
-def validate_source(source: dict[str, Any], config_trusted: list[str], config_blocked: list[str]) -> ValidationResult:
-    """
-    Valide une source selon les règles du projet.
-
-    Statuts possibles dans index_status :
-    disabled | local_user_content | reference_only | downloadable |
-    to_verify | error | downloaded
-    """
-    source_id = str(source.get("id", "unknown"))
-    result = ValidationResult(source_id=source_id)
-
-    enabled = bool(source.get("enabled", False))
-    download = bool(source.get("download", False))
-    legal_status = str(source.get("legal_status", "unknown"))
-    license_ = source.get("license")
-    pdf_url = source.get("pdf_url")
-
-    if not enabled:
-        result.index_status = "disabled"
-        result.add_reason("enabled=false")
-        return result
-
-    if legal_status == "created_by_user":
-        result.index_status = "local_user_content"
-        result.add_reason("contenu créé par l'utilisateur (pas de téléchargement auto)")
-        return result
-
-    if not download:
-        result.index_status = "reference_only"
-        result.add_reason("download=false — référence uniquement")
-        return result
-
-    # --- Source marquée download=true : contrôles stricts ---
-    for url in _urls_to_check(source):
-        blocked = _contains_blocked_pattern(url, config_blocked)
-        if blocked:
-            result.index_status = "to_verify"
-            result.add_reason(f"motif bloqué détecté dans l'URL : {blocked}")
-            return result
-
-        if source.get("url") and url == source.get("url") and not _domain_trusted(url, config_trusted):
-            result.index_status = "to_verify"
-            result.add_reason(f"domaine non fiable pour url : {_host(url)}")
-            return result
-
-    if not pdf_url:
-        result.index_status = "to_verify"
-        result.add_reason("pdf_url manquante — téléchargement impossible")
-        return result
-
-    pdf_blocked = _contains_blocked_pattern(str(pdf_url), config_blocked)
-    if pdf_blocked:
-        result.index_status = "to_verify"
-        result.add_reason(f"motif bloqué détecté dans pdf_url : {pdf_blocked}")
-        return result
-
-    if not _domain_trusted(str(pdf_url), config_trusted):
-        result.index_status = "to_verify"
-        result.add_reason(f"domaine pdf_url non fiable : {_host(str(pdf_url))}")
-        return result
-
-    if legal_status != "open_access" and not license_:
-        result.index_status = "to_verify"
-        result.add_reason("legal_status sans open_access et sans licence explicite")
-        return result
-
-    if legal_status == "unknown":
-        result.index_status = "to_verify"
-        result.add_reason("legal_status inconnu")
-        return result
-
-    result.can_download = True
-    result.index_status = "downloadable"
-    return result
+def validate_all(
+    sources: list[Source],
+    *,
+    blocked_patterns: list[str],
+    trusted_publishers: list[str],
+) -> list[ValidationResult]:
+    """Applique `validate_source` à toutes les sources."""
+    return [
+        validate_source(
+            s,
+            blocked_patterns=blocked_patterns,
+            trusted_publishers=trusted_publishers,
+        )
+        for s in sources
+    ]

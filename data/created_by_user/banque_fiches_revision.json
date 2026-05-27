@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "Fiches de révision créées par l'utilisateur.",
+  "fiches": [
+    {
+      "id": "fiche_001",
+      "level": "L1",
+      "subject": "psychologie_generale",
+      "title": "Apprentissage par conditionnement",
+      "summary": "...",
+      "key_points": [
+        "...",
+        "..."
+      ]
+    }
+  ]
+}

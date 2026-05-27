@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "description": "Banque de quiz QCM personnels.",
+  "quiz": [
+    {
+      "id": "q001",
+      "level": "L1",
+      "subject": "psychologie_generale",
+      "question": "Qui a formulé la théorie du conditionnement opérant ?",
+      "choices": [
+        "Pavlov",
+        "Skinner",
+        "Watson",
+        "Bandura"
+      ],
+      "answer_index": 1,
+      "explanation": "B. F. Skinner — années 1930-1950."
+    }
+  ]
+}

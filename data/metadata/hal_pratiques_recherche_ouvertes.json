@@ -1,0 +1,19 @@
+{
+  "id": "hal_pratiques_recherche_ouvertes",
+  "title": "Les pratiques de recherche ouvertes en psychologie",
+  "url": "https://hal.science/hal-03161592v1",
+  "pdf_url": null,
+  "document_type": "article_scientifique",
+  "level": "recherche_avancee",
+  "subject": "psychologie_generale",
+  "legal_status": "open_access",
+  "license": null,
+  "enabled": false,
+  "download": false,
+  "downloaded": false,
+  "local_path": null,
+  "notes": "Désactivé — cours complétés via programme FR (concepts_links.json)",
+  "date_processed": "2026-05-27T11:36:28Z",
+  "status": "disabled",
+  "error": null
+}

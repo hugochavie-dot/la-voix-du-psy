@@ -1,89 +1,71 @@
-"""Génération des index CSV/JSON et liste des sources à vérifier."""
+"""Écriture des index globaux (CSV + JSON) et de la liste `to_verify`."""
 
 from __future__ import annotations
 
 import csv
 import json
 from pathlib import Path
-from typing import Any
+
+from src.metadata_builder import Metadata
+from src.source_validator import (
+    STATUS_TO_VERIFY,
+    ValidationResult,
+)
 
 INDEX_FIELDS = [
     "id",
     "title",
     "status",
-    "enabled",
-    "download",
-    "legal_status",
-    "license",
-    "document_type",
     "level",
     "subject",
+    "document_type",
+    "legal_status",
+    "license",
+    "enabled",
+    "download",
+    "downloaded",
     "url",
     "pdf_url",
-    "downloaded",
     "local_path",
-    "notes",
     "error",
-    "reasons",
 ]
 
 
-def _row_from_record(record: dict[str, Any], reasons: list[str] | None = None) -> dict[str, Any]:
-    return {
-        "id": record.get("id"),
-        "title": record.get("title"),
-        "status": record.get("status"),
-        "enabled": record.get("enabled"),
-        "download": record.get("download"),
-        "legal_status": record.get("legal_status"),
-        "license": record.get("license"),
-        "document_type": record.get("document_type"),
-        "level": record.get("level"),
-        "subject": record.get("subject"),
-        "url": record.get("url"),
-        "pdf_url": record.get("pdf_url"),
-        "downloaded": record.get("downloaded"),
-        "local_path": record.get("local_path"),
-        "notes": record.get("notes"),
-        "error": record.get("error"),
-        "reasons": "; ".join(reasons or []),
-    }
+def write_index(metadatas: list[Metadata], *, csv_path: Path, json_path: Path) -> None:
+    """Écrit l'index global au format CSV et JSON."""
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.parent.mkdir(parents=True, exist_ok=True)
 
+    rows = [m.to_dict() for m in metadatas]
 
-def write_indexes(
-    data_dir: Path,
-    records: list[dict[str, Any]],
-    reasons_map: dict[str, list[str]],
-    *,
-    dry_run: bool = False,
-) -> dict[str, Path]:
-    """Crée index_resources.csv, index_resources.json et to_verify/sources_a_verifier.csv."""
-    rows = [_row_from_record(r, reasons_map.get(str(r.get("id")), [])) for r in records]
-
-    paths = {
-        "csv": data_dir / "index_resources.csv",
-        "json": data_dir / "index_resources.json",
-        "to_verify": data_dir / "to_verify" / "sources_a_verifier.csv",
-    }
-
-    if dry_run:
-        return paths
-
-    data_dir.mkdir(parents=True, exist_ok=True)
-    paths["to_verify"].parent.mkdir(parents=True, exist_ok=True)
-
-    with paths["csv"].open("w", encoding="utf-8", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=INDEX_FIELDS)
+    with csv_path.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=INDEX_FIELDS, extrasaction="ignore")
         writer.writeheader()
-        writer.writerows(rows)
+        for row in rows:
+            writer.writerow({k: row.get(k, "") for k in INDEX_FIELDS})
 
-    with paths["json"].open("w", encoding="utf-8") as fh:
-        json.dump(rows, fh, ensure_ascii=False, indent=2)
+    json_path.write_text(
+        json.dumps(rows, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
-    verify_rows = [row for row in rows if row["status"] in {"to_verify", "error"}]
-    with paths["to_verify"].open("w", encoding="utf-8", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=INDEX_FIELDS)
-        writer.writeheader()
-        writer.writerows(verify_rows)
 
-    return paths
+def write_to_verify(results: list[ValidationResult], *, csv_path: Path) -> int:
+    """Liste les sources nécessitant une vérification manuelle (motifs bloqués,
+    domaine inconnu, pdf_url manquante…)."""
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    flagged = [r for r in results if r.status == STATUS_TO_VERIFY]
+    with csv_path.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["id", "title", "raisons", "url", "pdf_url"])
+        for r in flagged:
+            writer.writerow(
+                [
+                    r.source.id,
+                    r.source.title,
+                    " ; ".join(r.reasons),
+                    r.source.url or "",
+                    r.source.pdf_url or "",
+                ]
+            )
+    return len(flagged)

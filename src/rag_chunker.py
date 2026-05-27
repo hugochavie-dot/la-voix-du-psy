@@ -1,110 +1,115 @@
-"""Découpage du texte en chunks RAG (800–1200 caractères)."""
+"""Découpe le texte en chunks RAG (800–1200 caractères) avec recouvrement.
+
+Le découpage privilégie les frontières naturelles (fin de paragraphe, fin
+de phrase) pour éviter de couper au milieu d'une idée.
+"""
 
 from __future__ import annotations
 
 import json
-import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Iterable
 
-MIN_CHUNK = 800
-MAX_CHUNK = 1200
+from src.config_loader import Source
 
-
-def _normalize_whitespace(text: str) -> str:
-    return re.sub(r"\s+", " ", text).strip()
-
-
-def _split_sentences(text: str) -> list[str]:
-    parts = re.split(r"(?<=[.!?…])\s+", text)
-    return [p.strip() for p in parts if p.strip()]
+MIN_CHARS = 800
+MAX_CHARS = 1200
+OVERLAP_CHARS = 100
 
 
-def chunk_text(text: str, *, min_size: int = MIN_CHUNK, max_size: int = MAX_CHUNK) -> list[str]:
-    """
-    Découpe un texte en segments de 800 à 1200 caractères environ.
+@dataclass
+class Chunk:
+    """Un fragment de texte enrichi des métadonnées de la source."""
 
-    Privilégie les coupures en fin de phrase.
-    """
-    text = _normalize_whitespace(text)
-    if not text:
-        return []
+    chunk_id: str
+    source_id: str
+    title: str
+    subject: str
+    level: str
+    document_type: str
+    license: str | None
+    url: str | None
+    chunk_number: int
+    chunk_text: str
 
-    if len(text) <= max_size:
-        return [text]
-
-    sentences = _split_sentences(text)
-    chunks: list[str] = []
-    current = ""
-
-    for sentence in sentences:
-        candidate = f"{current} {sentence}".strip() if current else sentence
-        if len(candidate) <= max_size:
-            current = candidate
-            continue
-
-        if current:
-            chunks.append(current)
-            current = sentence
-        else:
-            # phrase unique trop longue : coupe dure
-            start = 0
-            while start < len(sentence):
-                chunks.append(sentence[start : start + max_size])
-                start += max_size
-            current = ""
-
-        if len(current) >= min_size:
-            chunks.append(current)
-            current = ""
-
-    if current:
-        if chunks and len(current) < min_size // 2:
-            chunks[-1] = f"{chunks[-1]} {current}".strip()
-        else:
-            chunks.append(current)
-
-    return [c for c in chunks if c.strip()]
-
-
-def iter_rag_records(source: dict[str, Any], chunks: list[str]) -> Iterator[dict[str, Any]]:
-    """Génère les enregistrements JSONL pour chaque chunk."""
-    source_id = str(source.get("id", "source"))
-    for index, chunk in enumerate(chunks, start=1):
-        yield {
-            "chunk_id": f"{source_id}_{index:04d}",
-            "source_id": source_id,
-            "title": source.get("title"),
-            "subject": source.get("subject"),
-            "level": source.get("level"),
-            "document_type": source.get("document_type"),
-            "license": source.get("license"),
-            "url": source.get("url"),
-            "chunk_number": index,
-            "chunk_text": chunk,
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "chunk_id": self.chunk_id,
+            "source_id": self.source_id,
+            "title": self.title,
+            "subject": self.subject,
+            "level": self.level,
+            "document_type": self.document_type,
+            "license": self.license,
+            "url": self.url,
+            "chunk_number": self.chunk_number,
+            "chunk_text": self.chunk_text,
         }
 
 
-def write_rag_jsonl(
-    records: list[dict[str, Any]],
-    dest: Path,
-    *,
-    dry_run: bool = False,
-) -> Path:
-    """Écrit data/rag_ready/rag_chunks.jsonl (append si fichier existant en mode réel)."""
-    if dry_run:
-        return dest
+def _find_breakpoint(text: str, start: int, hard_end: int) -> int:
+    """Trouve un point de coupe propre entre `start+MIN_CHARS` et `hard_end`."""
+    soft_start = start + MIN_CHARS
+    if soft_start >= hard_end:
+        return hard_end
+    window = text[soft_start:hard_end]
+    for sep in ("\n\n", "\n", ". ", "? ", "! ", "; "):
+        idx = window.rfind(sep)
+        if idx != -1:
+            return soft_start + idx + len(sep)
+    return hard_end
 
+
+def chunk_text(text: str) -> list[str]:
+    """Découpe `text` en chunks de longueur cible 800–1200 avec léger overlap."""
+    text = (text or "").strip()
+    if not text:
+        return []
+
+    chunks: list[str] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        hard_end = min(i + MAX_CHARS, n)
+        if hard_end - i <= MAX_CHARS and hard_end == n:
+            chunks.append(text[i:hard_end].strip())
+            break
+        end = _find_breakpoint(text, i, hard_end)
+        chunks.append(text[i:end].strip())
+        if end >= n:
+            break
+        i = max(end - OVERLAP_CHARS, end)
+    return [c for c in chunks if c]
+
+
+def build_chunks(source: Source, text: str) -> list[Chunk]:
+    """Construit les `Chunk` enrichis pour une source donnée."""
+    out: list[Chunk] = []
+    for n, piece in enumerate(chunk_text(text), start=1):
+        out.append(
+            Chunk(
+                chunk_id=f"{source.id}_{n:04d}",
+                source_id=source.id,
+                title=source.title,
+                subject=source.subject,
+                level=source.level,
+                document_type=source.document_type,
+                license=source.license,
+                url=source.url,
+                chunk_number=n,
+                chunk_text=piece,
+            )
+        )
+    return out
+
+
+def write_jsonl(chunks: Iterable[Chunk], dest: Path) -> int:
+    """Écrit (ou réécrit) les chunks dans un fichier JSONL et retourne le nombre."""
     dest.parent.mkdir(parents=True, exist_ok=True)
+    count = 0
     with dest.open("w", encoding="utf-8") as fh:
-        for record in records:
-            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
-    return dest
-
-
-def append_rag_jsonl(records: list[dict[str, Any]], dest: Path) -> None:
-    """Ajoute des lignes au fichier JSONL global."""
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with dest.open("a", encoding="utf-8") as fh:
-        for record in records:
-            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        for chunk in chunks:
+            fh.write(json.dumps(chunk.to_dict(), ensure_ascii=False) + "\n")
+            count += 1
+    return count
